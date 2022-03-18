@@ -1,0 +1,13 @@
+###########################################################################
+# Non-root user
+###########################################################################
+
+# Add a non-root user to prevent files being created with root permissions on host machine.
+ARG PUID=1000
+ENV PUID ${PUID}
+ARG PGID=1000
+ENV PGID ${PGID}
+
+RUN groupadd -g ${PGID} main && \
+    useradd -l -u ${PUID} -g main -m main && \
+    usermod -p "*" main -s /bin/bash
