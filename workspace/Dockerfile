@@ -165,25 +165,17 @@ RUN yay -S asdf-vm
 
 USER root
 
-RUN echo "" >> ~/.bashrc && \
-    echo '# asdf' >> ~/.bashrc && \
-    echo 'source /opt/asdf-vm/asdf.sh' >> ~/.bashrc
-
-RUN echo "" >> ~/.zshrc && \
-    echo '# asdf' >> ~/.zshrc && \
-    echo 'source /opt/asdf-vm/asdf.sh' >> ~/.zshrc
+RUN echo "" >> ~/.zshrc >> ~/.bashrc && \
+    echo '# asdf' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'source /opt/asdf-vm/asdf.sh' >> ~/.zshrc >> ~/.bashrc
 
 ENV PATH="/opt/asdf-vm/bin:$PATH"
 
 USER web
 
-RUN echo "" >> ~/.bashrc && \
-    echo '# asdf' >> ~/.bashrc && \
-    echo 'source /opt/asdf-vm/asdf.sh' >> ~/.bashrc
-
-RUN echo "" >> ~/.zshrc && \
-    echo '# asdf' >> ~/.zshrc && \
-    echo 'source /opt/asdf-vm/asdf.sh' >> ~/.zshrc
+RUN echo "" >> ~/.bashrc >> ~/.zshrc && \
+    echo '# asdf' >> ~/.bashrc >> ~/.zshrc && \
+    echo 'source /opt/asdf-vm/asdf.sh' >> ~/.bashrc >> ~/.zshrc
 
 ENV PATH="/opt/asdf-vm/bin:$PATH"
 
@@ -199,8 +191,6 @@ RUN asdf install nodejs 10.24.1 && \
     asdf install nodejs 12.22.10 && \
     asdf install nodejs 14.19.0 && \
     asdf install nodejs 16.14.0
-
-RUN asdf global nodejs 16.14.0
 
 ###########################################################################
 # PHP
@@ -248,7 +238,45 @@ RUN cp $HOME/.asdf/installs/php/8.1.3/php-fpm.conf.default $HOME/.asdf/installs/
     sed -i 's/user = www-data/user = web/' $HOME/.asdf/installs/php/8.1.3/php-fpm.d/www.conf && \
     sed -i 's/group = www-data/group = web/' $HOME/.asdf/installs/php/8.1.3/php-fpm.d/www.conf
 
+###########################################################################
+# ASDF POST-INSTALL
+###########################################################################
+
+RUN cp -R /root/.asdf /home/web/.asdf
+
+USER root
+
 RUN asdf global php 8.1.3
+
+RUN asdf global nodejs 16.14.0
+
+RUN echo "" >> ~/.zshrc >> ~/.bashrc && \
+    echo '# asdf-nodejs' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-node-10="asdf global nodejs 10.24.1"' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-node-12="asdf global nodejs 12.22.10"' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-node-14="asdf global nodejs 14.19.0"' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-node-16="asdf global nodejs 16.14.0"' >> ~/.zshrc >> ~/.bashrc && \
+    echo '# asdf-php' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-php-74="asdf global php 7.4.28"' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-php-80="asdf global php 8.0.16"' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-php-81="asdf global php 8.1.3"' >> ~/.zshrc >> ~/.bashrc
+
+USER web
+
+RUN asdf global php 8.1.3
+
+RUN asdf global nodejs 16.14.0
+
+RUN echo "" >> ~/.zshrc >> ~/.bashrc && \
+    echo '# asdf-nodejs' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-node-10="asdf global nodejs 10.24.1"' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-node-12="asdf global nodejs 12.22.10"' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-node-14="asdf global nodejs 14.19.0"' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-node-16="asdf global nodejs 16.14.0"' >> ~/.zshrc >> ~/.bashrc && \
+    echo '# asdf-php' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-php-74="asdf global php 7.4.28"' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-php-80="asdf global php 8.0.16"' >> ~/.zshrc >> ~/.bashrc && \
+    echo 'alias use-php-81="asdf global php 8.1.3"' >> ~/.zshrc >> ~/.bashrc
 
 ###########################################################################
 # NGINX
@@ -269,7 +297,9 @@ COPY nginx/logrotate /etc/logrotate.d/
 ###########################################################################
 
 ADD ./startup.sh /opt/startup.sh
+
 RUN sed -i 's/\r//g' /opt/startup.sh
+
 CMD ["/bin/bash", "/opt/startup.sh"]
 
 # Set default work directory
