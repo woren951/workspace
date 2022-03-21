@@ -65,6 +65,14 @@ USER root
 RUN pacman -S --noconfirm git
 
 ###########################################################################
+# OPENSSH
+###########################################################################
+
+USER root
+
+RUN pacman -S --noconfirm openssh
+
+###########################################################################
 # PYTHON
 ###########################################################################
 
@@ -129,13 +137,22 @@ RUN wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.
 
 RUN sh install.sh
 
+RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
+    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel npm yarn)/' ~/.zshrc
+
 USER main
 
 RUN sh install.sh
 
+RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
+    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel npm yarn)/' ~/.zshrc
+
 USER web
 
 RUN sh install.sh
+
+RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
+    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel npm yarn)/' ~/.zshrc
 
 ###########################################################################
 # GOOGLE CHROME
@@ -242,9 +259,11 @@ RUN cp $HOME/.asdf/installs/php/8.1.3/php-fpm.conf.default $HOME/.asdf/installs/
 # ASDF POST-INSTALL
 ###########################################################################
 
+USER root
+
 RUN cp -R /root/.asdf /home/web/.asdf
 
-USER root
+RUN chown -R web:web /home/web/.asdf
 
 RUN asdf global php 8.1.3
 
