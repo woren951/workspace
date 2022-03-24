@@ -102,7 +102,7 @@ RUN pacman -S --noconfirm pkgconf oniguruma diffutils make autoconf bison re2c t
 
 USER root
 
-RUN pacman -S --noconfirm libpng libjpeg gd imagemagick libxslt libzip libmcrypt
+RUN pacman -S --noconfirm libpng libjpeg gd imagemagick libxslt libzip libmcrypt libimagequant
 
 ###########################################################################
 # USERS
@@ -182,17 +182,17 @@ RUN yay -S asdf-vm
 
 USER root
 
-RUN echo "" >> ~/.zshrc >> ~/.bashrc && \
-    echo '# asdf' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'source /opt/asdf-vm/asdf.sh' >> ~/.zshrc >> ~/.bashrc
+RUN echo "" | tee -a ~/.zshrc ~/.bashrc && \
+    echo '# asdf' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'source /opt/asdf-vm/asdf.sh' | tee -a ~/.zshrc ~/.bashrc
 
 ENV PATH="/opt/asdf-vm/bin:$PATH"
 
 USER web
 
-RUN echo "" >> ~/.bashrc >> ~/.zshrc && \
-    echo '# asdf' >> ~/.bashrc >> ~/.zshrc && \
-    echo 'source /opt/asdf-vm/asdf.sh' >> ~/.bashrc >> ~/.zshrc
+RUN echo "" | tee -a ~/.zshrc ~/.bashrc && \
+    echo '# asdf' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'source /opt/asdf-vm/asdf.sh' | tee -a ~/.zshrc ~/.bashrc
 
 ENV PATH="/opt/asdf-vm/bin:$PATH"
 
@@ -269,16 +269,16 @@ RUN asdf global php 8.1.3
 
 RUN asdf global nodejs 16.14.0
 
-RUN echo "" >> ~/.zshrc >> ~/.bashrc && \
-    echo '# asdf-nodejs' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-node-10="asdf global nodejs 10.24.1"' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-node-12="asdf global nodejs 12.22.10"' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-node-14="asdf global nodejs 14.19.0"' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-node-16="asdf global nodejs 16.14.0"' >> ~/.zshrc >> ~/.bashrc && \
-    echo '# asdf-php' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-php-74="asdf global php 7.4.28"' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-php-80="asdf global php 8.0.16"' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-php-81="asdf global php 8.1.3"' >> ~/.zshrc >> ~/.bashrc
+RUN echo "" | tee -a ~/.zshrc ~/.bashrc && \
+    echo '# asdf-nodejs' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-node-10="asdf global nodejs 10.24.1"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-node-12="asdf global nodejs 12.22.10"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-node-14="asdf global nodejs 14.19.0"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-node-16="asdf global nodejs 16.14.0"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo '# asdf-php' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-php-74="asdf global php 7.4.28"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-php-80="asdf global php 8.0.16"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-php-81="asdf global php 8.1.3"' | tee -a ~/.zshrc ~/.bashrc
 
 USER web
 
@@ -286,16 +286,16 @@ RUN asdf global php 8.1.3
 
 RUN asdf global nodejs 16.14.0
 
-RUN echo "" >> ~/.zshrc >> ~/.bashrc && \
-    echo '# asdf-nodejs' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-node-10="asdf global nodejs 10.24.1"' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-node-12="asdf global nodejs 12.22.10"' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-node-14="asdf global nodejs 14.19.0"' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-node-16="asdf global nodejs 16.14.0"' >> ~/.zshrc >> ~/.bashrc && \
-    echo '# asdf-php' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-php-74="asdf global php 7.4.28"' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-php-80="asdf global php 8.0.16"' >> ~/.zshrc >> ~/.bashrc && \
-    echo 'alias use-php-81="asdf global php 8.1.3"' >> ~/.zshrc >> ~/.bashrc
+RUN echo "" | tee -a ~/.zshrc ~/.bashrc && \
+    echo '# asdf-nodejs' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-node-10="asdf global nodejs 10.24.1"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-node-12="asdf global nodejs 12.22.10"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-node-14="asdf global nodejs 14.19.0"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-node-16="asdf global nodejs 16.14.0"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo '# asdf-php' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-php-74="asdf global php 7.4.28"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-php-80="asdf global php 8.0.16"' | tee -a ~/.zshrc ~/.bashrc && \
+    echo 'alias use-php-81="asdf global php 8.1.3"' | tee -a ~/.zshrc ~/.bashrc
 
 ###########################################################################
 # NPM
