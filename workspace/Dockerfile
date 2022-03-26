@@ -94,7 +94,7 @@ RUN pacman -S --noconfirm go
 
 USER root
 
-RUN pacman -S --noconfirm pkgconf oniguruma diffutils make autoconf bison re2c tidy postgresql-libs
+RUN pacman -S --noconfirm pkgconf oniguruma diffutils make autoconf bison re2c tidy postgresql-libs libsodium
 
 ###########################################################################
 # VIRTUAL:WORLD
@@ -176,6 +176,10 @@ RUN updatedb
 # ASDF
 ###########################################################################
 
+USER root
+
+ENV ASDF_DATA_DIR="/var/.asdf"
+
 USER main
 
 RUN yay -S asdf-vm
@@ -225,45 +229,54 @@ RUN asdf plugin-add php https://github.com/asdf-community/asdf-php.git
 
 # RUN asdf install php 7.1.33
 
-# RUN cp $HOME/.asdf/installs/php/7.1.33/php-fpm.conf.default $HOME/.asdf/installs/php/7.1.33/php-fpm.conf && \
-#     cp $HOME/.asdf/installs/php/7.1.33/php-fpm.d/www.conf.default $HOME/.asdf/installs/php/7.1.33/php-fpm.d/www.conf && \
-#     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9071/' $HOME/.asdf/installs/php/7.1.33/php-fpm.d/www.conf && \
-#     sed -i 's/user = www-data/user = web/' $HOME/.asdf/installs/php/7.1.33/php-fpm.d/www.conf && \
-#     sed -i 's/group = www-data/group = web/' $HOME/.asdf/installs/php/7.1.33/php-fpm.d/www.conf
+# RUN cp $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.conf && \
+#     cp $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf && \
+#     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9071/' $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf && \
+#     sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf && \
+#     sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf
 
 RUN asdf install php 7.4.28
 
-RUN cp $HOME/.asdf/installs/php/7.4.28/php-fpm.conf.default $HOME/.asdf/installs/php/7.4.28/php-fpm.conf && \
-    cp $HOME/.asdf/installs/php/7.4.28/php-fpm.d/www.conf.default $HOME/.asdf/installs/php/7.4.28/php-fpm.d/www.conf && \
-    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9074/' $HOME/.asdf/installs/php/7.4.28/php-fpm.d/www.conf && \
-    sed -i 's/user = www-data/user = web/' $HOME/.asdf/installs/php/7.4.28/php-fpm.d/www.conf && \
-    sed -i 's/group = www-data/group = web/' $HOME/.asdf/installs/php/7.4.28/php-fpm.d/www.conf
+RUN cp $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.conf && \
+    cp $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf && \
+    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9074/' $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf && \
+    sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf && \
+    sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf
+
+RUN asdf global php 7.4.28 && \
+    $ASDF_DATA_DIR/shims/pecl install libsodium imagick && \
+    echo 'extension=sodium.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/sodium.ini && \
+    echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/imagick.ini
 
 RUN asdf install php 8.0.16
 
-RUN cp $HOME/.asdf/installs/php/8.0.16/php-fpm.conf.default $HOME/.asdf/installs/php/8.0.16/php-fpm.conf && \
-    cp $HOME/.asdf/installs/php/8.0.16/php-fpm.d/www.conf.default $HOME/.asdf/installs/php/8.0.16/php-fpm.d/www.conf && \
-    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9080/' $HOME/.asdf/installs/php/8.0.16/php-fpm.d/www.conf && \
-    sed -i 's/user = www-data/user = web/' $HOME/.asdf/installs/php/8.0.16/php-fpm.d/www.conf && \
-    sed -i 's/group = www-data/group = web/' $HOME/.asdf/installs/php/8.0.16/php-fpm.d/www.conf
+RUN cp $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.conf && \
+    cp $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf && \
+    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9080/' $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf && \
+    sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf && \
+    sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf
+
+RUN asdf global php 8.0.16 && \
+    $ASDF_DATA_DIR/shims/pecl install imagick && \
+    echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/imagick.ini
 
 RUN asdf install php 8.1.3
 
-RUN cp $HOME/.asdf/installs/php/8.1.3/php-fpm.conf.default $HOME/.asdf/installs/php/8.1.3/php-fpm.conf && \
-    cp $HOME/.asdf/installs/php/8.1.3/php-fpm.d/www.conf.default $HOME/.asdf/installs/php/8.1.3/php-fpm.d/www.conf && \
-    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9081/' $HOME/.asdf/installs/php/8.1.3/php-fpm.d/www.conf && \
-    sed -i 's/user = www-data/user = web/' $HOME/.asdf/installs/php/8.1.3/php-fpm.d/www.conf && \
-    sed -i 's/group = www-data/group = web/' $HOME/.asdf/installs/php/8.1.3/php-fpm.d/www.conf
+RUN cp $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.conf && \
+    cp $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf && \
+    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9081/' $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf && \
+    sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf && \
+    sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf
+
+RUN asdf global php 8.1.3 && \
+    $ASDF_DATA_DIR/shims/pecl install imagick && \
+    echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/imagick.ini
 
 ###########################################################################
 # ASDF POST-INSTALL
 ###########################################################################
 
 USER root
-
-RUN cp -R /root/.asdf /home/web/.asdf
-
-RUN chown -R web:web /home/web/.asdf
 
 RUN asdf global php 8.1.3
 
