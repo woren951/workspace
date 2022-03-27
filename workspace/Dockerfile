@@ -243,6 +243,8 @@ RUN cp $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.conf.default $ASDF_DATA_DIR/in
     sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf && \
     sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf
 
+COPY php/php7.4.ini $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/php.ini
+
 RUN asdf global php 7.4.28 && \
     $ASDF_DATA_DIR/shims/pecl install libsodium imagick && \
     echo 'extension=sodium.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/sodium.ini && \
@@ -256,6 +258,8 @@ RUN cp $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.conf.default $ASDF_DATA_DIR/in
     sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf && \
     sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf
 
+COPY php/php8.0.ini $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/php.ini
+
 RUN asdf global php 8.0.16 && \
     $ASDF_DATA_DIR/shims/pecl install imagick && \
     echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/imagick.ini
@@ -267,6 +271,8 @@ RUN cp $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.conf.default $ASDF_DATA_DIR/ins
     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9081/' $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf && \
     sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf && \
     sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf
+
+COPY php/php8.1.ini $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/php.ini
 
 RUN asdf global php 8.1.3 && \
     $ASDF_DATA_DIR/shims/pecl install imagick && \
