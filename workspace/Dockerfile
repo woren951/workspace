@@ -208,7 +208,8 @@ USER root
 
 RUN asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 
-RUN asdf install nodejs 10.24.1 && \
+RUN --mount=type=cache,target=/var/cache/asdf/nodejs \
+    asdf install nodejs 10.24.1 && \
     asdf install nodejs 12.22.10 && \
     asdf install nodejs 14.19.0 && \
     asdf install nodejs 16.14.0
@@ -227,7 +228,8 @@ RUN asdf plugin-add php https://github.com/asdf-community/asdf-php.git
 # ENV CFLAGS=-DU_DEFINE_FALSE_AND_TRUE=1
 # ENV CXXFLAGS=-DU_DEFINE_FALSE_AND_TRUE=1
 
-# RUN asdf install php 7.1.33
+# RUN --mount=type=cache,target=/var/cache/asdf/php-71 \
+#     asdf install php 7.1.33
 
 # RUN cp $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.conf && \
 #     cp $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf && \
@@ -235,7 +237,15 @@ RUN asdf plugin-add php https://github.com/asdf-community/asdf-php.git
 #     sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf && \
 #     sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf
 
-RUN asdf install php 7.4.28
+# COPY php/php7.1.ini $ASDF_DATA_DIR/installs/php/7.1.33/conf.d/php.ini
+
+# RUN asdf global php 7.1.33 && \
+#     $ASDF_DATA_DIR/shims/pecl install libsodium imagick && \
+#     echo 'extension=sodium.so' > $ASDF_DATA_DIR/installs/php/7.1.33/conf.d/sodium.ini && \
+#     echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/7.1.33/conf.d/imagick.ini
+
+RUN --mount=type=cache,target=/var/cache/asdf/php-74 \
+    asdf install php 7.4.28
 
 RUN cp $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.conf && \
     cp $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf && \
@@ -250,7 +260,8 @@ RUN asdf global php 7.4.28 && \
     echo 'extension=sodium.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/sodium.ini && \
     echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/imagick.ini
 
-RUN asdf install php 8.0.16
+RUN --mount=type=cache,target=/var/cache/asdf/php-80 \
+    asdf install php 8.0.16
 
 RUN cp $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.conf && \
     cp $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf && \
@@ -264,7 +275,8 @@ RUN asdf global php 8.0.16 && \
     $ASDF_DATA_DIR/shims/pecl install imagick && \
     echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/imagick.ini
 
-RUN asdf install php 8.1.3
+RUN --mount=type=cache,target=/var/cache/asdf/php-81 \
+    asdf install php 8.1.3
 
 RUN cp $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.conf && \
     cp $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf && \
