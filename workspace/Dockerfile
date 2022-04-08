@@ -328,6 +328,10 @@ RUN echo "" | tee -a ~/.zshrc ~/.bashrc && \
     echo 'alias use-php-80="asdf global php 8.0.16"' | tee -a ~/.zshrc ~/.bashrc && \
     echo 'alias use-php-81="asdf global php 8.1.3"' | tee -a ~/.zshrc ~/.bashrc
 
+USER root
+
+RUN chown -R web: $ASDF_DATA_DIR
+
 ###########################################################################
 # NPM
 ###########################################################################
