@@ -338,9 +338,9 @@ RUN chown -R web: $ASDF_DATA_DIR
 
 USER root
 
-RUN pacman -S --noconfirm npm
-
-RUN npm install --global yarn gulp-cli grunt-cli
+RUN --mount=type=cache,target=/var/cache/npm \
+    pacman -S --noconfirm npm && \
+    npm install --global yarn gulp-cli grunt-cli
 
 ###########################################################################
 # NGINX

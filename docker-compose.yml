@@ -47,6 +47,8 @@ services:
       volumes:
         - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
         - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+        # logs
+        - ./.logs/mysql:/var/log/mysql
       ports:
         - "${MYSQL_PORT}:3306"
       networks:
@@ -167,8 +169,14 @@ services:
         context: ./kibana
         args:
           - ELK_VERSION=7.5.1
+          - ELK_HOST=elasticsearch-7
+          - KIBANA_HOST=kibana-7
       ports:
         - "${KIBANA_HTTP_PORT}:5601"
+      volumes:
+        # logs
+        - ./.logs/nginx:/var/log/nginx
+        - ./.logs/mysql:/var/log/mysql
       environment:
         ELASTICSEARCH_HOSTS: http://elasticsearch-7:9200
       depends_on:
@@ -182,8 +190,14 @@ services:
         context: ./kibana
         args:
           - ELK_VERSION=6.8.10
+          - ELK_HOST=elasticsearch-6
+          - KIBANA_HOST=kibana-6
       ports:
         - "${KIBANA_HTTP_PORT}:5601"
+      volumes:
+        # logs
+        - ./.logs/nginx:/var/log/nginx
+        - ./.logs/mysql:/var/log/mysql
       environment:
         ELASTICSEARCH_HOSTS: http://elasticsearch-6:9200
       depends_on:
@@ -202,9 +216,11 @@ services:
         - ${HOME}/.ssh:/root/.ssh
         - ${LOCALHTTPS_PATH}:${LOCALHTTPS_PATH}
         - ./workspace/nginx/sites:/etc/nginx/sites-available
-        - ./.logs/nginx/:/var/log/nginx
-        - ./workspace/bash/.zsh_history:/home/web/.zsh_history
-        - ./workspace/bash/.bash_history:/home/web/.bash_history
+        - .bash-history/.zsh_history:/home/web/.zsh_history
+        - .bash-history/.bash_history:/home/web/.bash_history
+        # logs
+        - ./.logs/nginx:/var/log/nginx
+        - ./.logs/mysql:/var/log/mysql
       ports:
         - "80:80"
         - "443:443"
