@@ -17,8 +17,6 @@ RUN chmod 0444 /etc/mysql/conf.d/my.cnf
 
 RUN mkdir /var/log/mysql && touch /var/log/mysql/slow.log
 
-RUN ls -a /var/log/mysql
-
 CMD ["mysqld"]
 
 EXPOSE 3306

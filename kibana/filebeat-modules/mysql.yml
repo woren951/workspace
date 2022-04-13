@@ -4,7 +4,7 @@
 - module: mysql
   # Error logs
   error:
-    enabled: true
+    enabled: false
 
     # Set custom paths for the log files. If left empty,
     # Filebeat will choose the paths depending on your OS.
@@ -17,4 +17,4 @@
     # Set custom paths for the log files. If left empty,
     # Filebeat will choose the paths depending on your OS.
     var.paths:
-      [ "/var/log/mysql/slow.log*" ]
+      [ "/var/log/mysql/*-slow.log" ]

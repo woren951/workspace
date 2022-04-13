@@ -33,8 +33,10 @@ RUN cd ${FILEBEAT_DIR} && ./filebeat modules enable mysql
 
 COPY filebeat-modules/mysql.yml $FILEBEAT_DIR/modules.d/mysql.yml
 
-# RUN ${FILEBEAT_DIR}/filebeat modules enable postgresql redis
-
-# RUN cd ${FILEBEAT_DIR} && ./filebeat setup && ./filebeat -e
+###########################################################################
+# MANUAL EXECUTION
+#
+# cd ${FILEBEAT_DIR} && ./filebeat setup && ./filebeat -e
+###########################################################################
 
 EXPOSE 5601
