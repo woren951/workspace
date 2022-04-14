@@ -23,7 +23,9 @@ RUN sed -i "s/localhost:9200/${ELK_HOST}:9200/" ${FILEBEAT_DIR}/filebeat.yml && 
 
 RUN cd ${FILEBEAT_DIR} && ./filebeat modules enable nginx
 
-COPY filebeat-modules/nginx.yml $FILEBEAT_DIR/modules.d/nginx.yml
+COPY --chown=kibana:root filebeat-modules/nginx.yml $FILEBEAT_DIR/modules.d/nginx.yml
+
+RUN chmod go-w $FILEBEAT_DIR/modules.d/nginx.yml
 
 ###########################################################################
 # FILEBEAT MYSQL
@@ -31,7 +33,9 @@ COPY filebeat-modules/nginx.yml $FILEBEAT_DIR/modules.d/nginx.yml
 
 RUN cd ${FILEBEAT_DIR} && ./filebeat modules enable mysql
 
-COPY filebeat-modules/mysql.yml $FILEBEAT_DIR/modules.d/mysql.yml
+COPY --chown=kibana:root filebeat-modules/mysql.yml $FILEBEAT_DIR/modules.d/mysql.yml
+
+RUN chmod go-w $FILEBEAT_DIR/modules.d/mysql.yml
 
 ###########################################################################
 # MANUAL EXECUTION
