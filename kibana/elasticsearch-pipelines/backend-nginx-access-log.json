@@ -1,0 +1,81 @@
+{
+    "description": "Pipeline for parsing backend Nginx access logs. Requires the geoip and user_agent plugins.",
+    "processors": [
+        {
+            "grok": {
+                "field": "message",
+                "patterns": [
+                    "%{TIMESTAMP_ISO8601:nginx.access.time} (?:-|%{WORD:nginx.access.country_code}) %{IP:nginx.access.remote_ip} (?:-|%{WORD:nginx.cache.status}) %{NUMBER:http.response.time:float} %{NUMBER:http.response.status_code:long} (?:-|%{WORD:nginx.access.forwarded_proto}) %{DATA:http.request.host} %{DATA:http.request.method} %{DATA:http.request.uri} %{NUMBER:http.response.body_size:int} %{DATA:http.request.referrer} %{DATA:user_agent}$"
+                ],
+                "ignore_missing": true
+            }
+        },
+        {
+            "set": {
+                "field": "source.ip",
+                "value": ""
+            }
+        },
+        {
+            "script": {
+                "lang": "painless",
+                "source": "boolean isPrivate(def dot, def ip) { try { StringTokenizer tok = new StringTokenizer(ip, dot); int firstByte = Integer.parseInt(tok.nextToken()); int secondByte = Integer.parseInt(tok.nextToken()); if (firstByte == 10) { return true; } if (firstByte == 192 && secondByte == 168) { return true; } if (firstByte == 172 && secondByte >= 16 && secondByte <= 31) { return true; } if (firstByte == 127) { return true; } return false; } catch (Exception e) { return false; }}try { ctx.source.ip = null; if (ctx.nginx.access.remote_ip == null) { return; } if (!isPrivate(params.dot, ctx.nginx.access.remote_ip)) { ctx.source.ip = ctx.nginx.access.remote_ip; }} catch (Exception e) { ctx.source.ip = null;}",
+                "params": {
+                    "dot": "."
+                }
+            }
+        },
+        {
+            "remove": {
+                "field": "source.ip",
+                "if": "ctx.source.ip == null"
+            }
+        },
+        {
+            "convert": {
+                "target_field": "source.address",
+                "type": "string",
+                "ignore_missing": true,
+                "field": "source.ip"
+            }
+        },
+        {
+            "rename": {
+                "field": "source.as.asn",
+                "target_field": "source.as.number",
+                "ignore_missing": true
+            }
+        },
+        {
+            "rename": {
+                "ignore_missing": true,
+                "field": "source.as.organization_name",
+                "target_field": "source.as.organization.name"
+            }
+        },
+        {
+            "geoip": {
+                "target_field": "source.geo",
+                "ignore_missing": true,
+                "field": "source.ip"
+            }
+        },
+        {
+            "geoip": {
+                "database_file": "GeoLite2-ASN.mmdb",
+                "field": "source.ip",
+                "target_field": "source.as",
+                "properties": [
+                    "asn",
+                    "organization_name"
+                ],
+                "ignore_missing": true
+            }
+        },
+        {
+            "remove": {
+                "field": "message"
+            }
+        }
+    ]
+}
