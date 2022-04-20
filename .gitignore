@@ -1,6 +1,6 @@
-.DS_Store
-.env
-.vscode
 .bash-history
 .data
+.DS_Store
+.env
 .logs
+.vscode-server

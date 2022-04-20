@@ -357,8 +357,19 @@ COPY nginx/nginx.conf /etc/nginx/
 COPY nginx/logrotate /etc/logrotate.d/
 
 ###########################################################################
+# VSCODE-SERVER
+###########################################################################
+
+USER root
+
+RUN mkdir -p /home/web/.vscode-server/extensions && \
+    chown -R web /home/web/.vscode-server
+
+###########################################################################
 # Startup script
 ###########################################################################
+
+USER root
 
 ADD ./startup.sh /opt/startup.sh
 
