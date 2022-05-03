@@ -33,6 +33,13 @@ RUN echo 'de_DE.UTF-8 UTF-8' >> /etc/locale.gen && \
 RUN locale-gen
 
 ###########################################################################
+# TIMEZONE
+###########################################################################
+
+RUN ln -snf /usr/share/zoneinfo/Europe/Kiev /etc/localtime && \
+    echo Europe/Kiev > /etc/timezone
+
+###########################################################################
 # VI
 ###########################################################################
 
@@ -78,7 +85,8 @@ RUN pacman -S --noconfirm openssh
 
 USER root
 
-RUN pacman -S --noconfirm python
+RUN --mount=type=cache,target=/var/cache/asdf/python \
+    pacman -S --noconfirm python
 
 ###########################################################################
 # GO
@@ -86,7 +94,8 @@ RUN pacman -S --noconfirm python
 
 USER root
 
-RUN pacman -S --noconfirm go
+RUN --mount=type=cache,target=/var/cache/asdf/golang \
+    pacman -S --noconfirm go
 
 ###########################################################################
 # OTHER
@@ -208,7 +217,8 @@ USER root
 
 RUN asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 
-RUN asdf install nodejs 10.24.1 && \
+RUN --mount=type=cache,target=/var/cache/asdf/nodejs \
+    asdf install nodejs 10.24.1 && \
     asdf install nodejs 12.22.10 && \
     asdf install nodejs 14.19.0 && \
     asdf install nodejs 16.14.0
@@ -243,7 +253,8 @@ RUN asdf plugin-add php https://github.com/asdf-community/asdf-php.git
 #     echo 'extension=sodium.so' > $ASDF_DATA_DIR/installs/php/7.1.33/conf.d/sodium.ini && \
 #     echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/7.1.33/conf.d/imagick.ini
 
-RUN asdf install php 7.4.28
+RUN --mount=type=cache,target=/var/cache/asdf/php-74 \
+    asdf install php 7.4.28
 
 RUN cp $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.conf && \
     cp $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf && \
@@ -259,7 +270,8 @@ RUN asdf global php 7.4.28 && \
     echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/imagick.ini && \
     echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/redis.ini
 
-RUN asdf install php 8.0.16
+RUN --mount=type=cache,target=/var/cache/asdf/php-80 \
+    asdf install php 8.0.16
 
 RUN cp $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.conf && \
     cp $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf && \
@@ -274,7 +286,8 @@ RUN asdf global php 8.0.16 && \
     echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/imagick.ini && \
     echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/redis.ini
 
-RUN asdf install php 8.1.3
+RUN --mount=type=cache,target=/var/cache/asdf/php-81 \
+    asdf install php 8.1.3
 
 RUN cp $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.conf && \
     cp $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf && \
