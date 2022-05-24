@@ -111,7 +111,7 @@ RUN pacman -S --noconfirm pkgconf oniguruma diffutils make autoconf bison re2c t
 
 USER root
 
-RUN pacman -S --noconfirm libpng libjpeg gd imagemagick libxslt libzip libmcrypt libimagequant
+RUN pacman -S --noconfirm libpng libjpeg gd imagemagick libxslt libzip libmcrypt libimagequant jpegoptim optipng
 
 ###########################################################################
 # USERS
