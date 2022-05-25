@@ -191,7 +191,7 @@ ENV ASDF_DATA_DIR="/var/.asdf"
 
 USER main
 
-RUN yay -S asdf-vm
+RUN yay -S asdf-vm --noconfirm
 
 USER root
 
