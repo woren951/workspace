@@ -12,6 +12,8 @@ USER root
 # Generate packman key
 RUN pacman-key --init
 
+RUN pacman -Sy archlinux-keyring --noconfirm && pacman -Su --noconfirm
+
 # Update packman database and dependencies
 RUN pacman -Syyu --noconfirm
 
@@ -191,7 +193,7 @@ ENV ASDF_DATA_DIR="/var/.asdf"
 
 USER main
 
-RUN yay -S asdf-vm --noconfirm
+RUN yay -S --noconfirm asdf-vm
 
 USER root
 
