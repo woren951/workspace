@@ -46,7 +46,7 @@ services:
     phpmyadmin:
       build: ./phpmyadmin
       environment:
-        - PMA_ARBITRARY=1
+        - PMA_HOSTS=mysql-8
         - MYSQL_USER=${PMA_USER}
         - MYSQL_PASSWORD=${PMA_PASSWORD}
         - MYSQL_ROOT_PASSWORD=${PMA_ROOT_PASSWORD}
@@ -287,7 +287,7 @@ services:
         - ./.vscode-server/extensions:/home/web/.vscode-server/extensions
         # logs
         - ./.logs/nginx:/var/log/nginx
-        - ./.logs/mysql-8:/var/log/mysql-8
       ports:
         - "80:80"
         - "443:443"
+        - "9003:9003"

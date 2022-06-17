@@ -184,6 +184,12 @@ RUN pacman -S --noconfirm mlocate
 RUN updatedb
 
 ###########################################################################
+# XDEBUG
+###########################################################################
+
+RUN pacman -S --noconfirm xdebug
+
+###########################################################################
 # ASDF
 ###########################################################################
 
@@ -300,9 +306,10 @@ RUN cp $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.conf.default $ASDF_DATA_DIR/ins
 COPY php/php8.1.ini $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/php.ini
 
 RUN asdf global php 8.1.3 && \
-    $ASDF_DATA_DIR/shims/pecl install imagick redis && \
+    $ASDF_DATA_DIR/shims/pecl install imagick redis xdebug && \
     echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/imagick.ini && \
-    echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/redis.ini
+    echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/redis.ini && \
+    echo 'zend_extension=xdebug' > $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini
 
 ###########################################################################
 # ASDF POST-INSTALL
