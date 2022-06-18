@@ -273,10 +273,16 @@ RUN cp $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.conf.default $ASDF_DATA_DIR/in
 COPY php/php7.4.ini $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/php.ini
 
 RUN asdf global php 7.4.28 && \
-    $ASDF_DATA_DIR/shims/pecl install libsodium imagick redis && \
+    $ASDF_DATA_DIR/shims/pecl install libsodium imagick redis xdebug && \
     echo 'extension=sodium.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/sodium.ini && \
     echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/imagick.ini && \
-    echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/redis.ini
+    echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/redis.ini && \
+    echo 'zend_extension=xdebug' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini
+
+RUN echo '' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini && \
+    echo 'xdebug.mode=develop,coverage,debug,profile' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini && \
+    echo 'xdebug.start_with_request=yes' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini && \
+    echo '' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini
 
 RUN --mount=type=cache,target=/var/cache/asdf/php-80 \
     asdf install php 8.0.16
@@ -290,9 +296,15 @@ RUN cp $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.conf.default $ASDF_DATA_DIR/in
 COPY php/php8.0.ini $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/php.ini
 
 RUN asdf global php 8.0.16 && \
-    $ASDF_DATA_DIR/shims/pecl install imagick redis && \
+    $ASDF_DATA_DIR/shims/pecl install imagick redis xdebug && \
     echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/imagick.ini && \
-    echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/redis.ini
+    echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/redis.ini && \
+    echo 'zend_extension=xdebug' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini
+
+RUN echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini && \
+    echo 'xdebug.mode=develop,coverage,debug,profile' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini && \
+    echo 'xdebug.start_with_request=yes' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini && \
+    echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini
 
 RUN --mount=type=cache,target=/var/cache/asdf/php-81 \
     asdf install php 8.1.3
