@@ -311,6 +311,11 @@ RUN asdf global php 8.1.3 && \
     echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/redis.ini && \
     echo 'zend_extension=xdebug' > $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini
 
+RUN echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini && \
+    echo 'xdebug.mode=develop,coverage,debug,profile' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini && \
+    echo 'xdebug.start_with_request=yes' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini && \
+    echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini
+
 ###########################################################################
 # ASDF POST-INSTALL
 ###########################################################################
