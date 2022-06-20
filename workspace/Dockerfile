@@ -282,6 +282,7 @@ RUN asdf global php 7.4.28 && \
 RUN echo '' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini && \
     echo 'xdebug.mode=develop,coverage,debug,profile' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini && \
     echo 'xdebug.start_with_request=yes' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini && \
+    echo 'xdebug.log_level=0' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini && \
     echo '' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini
 
 RUN --mount=type=cache,target=/var/cache/asdf/php-80 \
@@ -304,6 +305,7 @@ RUN asdf global php 8.0.16 && \
 RUN echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini && \
     echo 'xdebug.mode=develop,coverage,debug,profile' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini && \
     echo 'xdebug.start_with_request=yes' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini && \
+    echo 'xdebug.log_level=0' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini && \
     echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini
 
 RUN --mount=type=cache,target=/var/cache/asdf/php-81 \
@@ -326,6 +328,7 @@ RUN asdf global php 8.1.3 && \
 RUN echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini && \
     echo 'xdebug.mode=develop,coverage,debug,profile' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini && \
     echo 'xdebug.start_with_request=yes' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini && \
+    echo 'xdebug.log_level=0' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini && \
     echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini
 
 ###########################################################################
