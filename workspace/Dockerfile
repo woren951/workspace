@@ -87,7 +87,7 @@ RUN pacman -S --noconfirm openssh
 
 USER root
 
-RUN --mount=type=cache,target=/var/cache/asdf/python \
+RUN --mount=type=cache,target=/var/cache/python \
     pacman -S --noconfirm python
 
 ###########################################################################
@@ -96,7 +96,7 @@ RUN --mount=type=cache,target=/var/cache/asdf/python \
 
 USER root
 
-RUN --mount=type=cache,target=/var/cache/asdf/golang \
+RUN --mount=type=cache,target=/var/cache/golang \
     pacman -S --noconfirm go
 
 ###########################################################################
@@ -127,14 +127,19 @@ ARG PGID=1000
 ENV PGID ${PGID}
 
 RUN groupadd -g ${PGID} web && \
-    useradd -l -u ${PUID} -g web -m web && \
-    usermod -p "*" web -s /bin/bash
+    useradd -l -r -u ${PUID} -g web -m web && \
+    usermod -p "*" web -s /bin/bash && \
+    echo "web ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/web
 
-ADD add-aur.sh /root
+###########################################################################
+# YAY
+###########################################################################
 
-RUN bash /root/add-aur.sh 'main' 'yay'
+USER web
 
-RUN yay -Syu --timeupdate
+RUN cd /home/web && git clone https://aur.archlinux.org/yay.git && \
+    cd yay && makepkg -sri --needed --noconfirm && cd - && \
+    rm -rf .cache yay
 
 ###########################################################################
 # ZSH
@@ -145,13 +150,6 @@ USER root
 RUN pacman -S --noconfirm zsh
 
 RUN wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-
-RUN sh install.sh
-
-RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
-    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel npm yarn)/' ~/.zshrc
-
-USER main
 
 RUN sh install.sh
 
@@ -169,9 +167,10 @@ RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
 # GOOGLE CHROME
 ###########################################################################
 
-USER main
+USER web
 
-RUN yay -S --noconfirm google-chrome
+RUN --mount=type=cache,target=/var/cache/google-chrome \
+    yay -S --noconfirm google-chrome
 
 ###########################################################################
 # LOCATE
@@ -187,6 +186,8 @@ RUN updatedb
 # XDEBUG
 ###########################################################################
 
+USER root
+
 RUN pacman -S --noconfirm xdebug
 
 ###########################################################################
@@ -197,181 +198,37 @@ USER root
 
 ENV ASDF_DATA_DIR="/var/.asdf"
 
-USER main
+ENV BASH_FILES="/root/.zshrc /root/.bashrc /home/web/.zshrc /home/web/.bashrc"
+
+USER web
 
 RUN yay -S --noconfirm asdf-vm
 
 USER root
 
-RUN echo "" | tee -a ~/.zshrc ~/.bashrc && \
-    echo '# asdf' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'source /opt/asdf-vm/asdf.sh' | tee -a ~/.zshrc ~/.bashrc
+RUN echo "" | tee -a ${BASH_FILES} && \
+    echo '# asdf' | tee -a ${BASH_FILES} && \
+    echo 'source /opt/asdf-vm/asdf.sh' | tee -a ${BASH_FILES}
 
-ENV PATH="/opt/asdf-vm/bin:$PATH"
+ENV PATH="/opt/asdf-vm/bin:${PATH}"
 
-USER web
+RUN asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git && \
+    asdf plugin-add php https://github.com/asdf-community/asdf-php.git
 
-RUN echo "" | tee -a ~/.zshrc ~/.bashrc && \
-    echo '# asdf' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'source /opt/asdf-vm/asdf.sh' | tee -a ~/.zshrc ~/.bashrc
-
-ENV PATH="/opt/asdf-vm/bin:$PATH"
-
-###########################################################################
-# NODE
-###########################################################################
-
-USER root
-
-RUN asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-
-RUN --mount=type=cache,target=/var/cache/asdf/nodejs \
-    asdf install nodejs 10.24.1 && \
-    asdf install nodejs 12.22.10 && \
-    asdf install nodejs 14.19.0 && \
-    asdf install nodejs 16.14.0
-
-###########################################################################
-# PHP
-###########################################################################
+RUN echo "" | tee -a ${BASH_FILES} && \
+    echo '# asdf-nodejs' | tee -a ${BASH_FILES} && \
+    echo 'alias use-nodejs-10="asdf global nodejs 10.24.1"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-nodejs-12="asdf global nodejs 12.22.10"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-nodejs-14="asdf global nodejs 14.19.0"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-nodejs-16="asdf global nodejs 16.14.0"' | tee -a ${BASH_FILES} && \
+    echo '# asdf-php' | tee -a ${BASH_FILES} && \
+    echo 'alias use-php-74="asdf global php 7.4.28"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-php-80="asdf global php 8.0.16"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-php-81="asdf global php 8.1.3"' | tee -a ${BASH_FILES}
 
 USER root
 
-RUN asdf plugin-add php https://github.com/asdf-community/asdf-php.git
-
-# ENV CXX="g++ -DTRUE=1 -DFALSE=0"
-# ENV CC="gcc -DTRUE=1 -DFALSE=0"
-
-# ENV CFLAGS=-DU_DEFINE_FALSE_AND_TRUE=1
-# ENV CXXFLAGS=-DU_DEFINE_FALSE_AND_TRUE=1
-
-# RUN --mount=type=cache,target=/var/cache/asdf/php-71 \
-#     asdf install php 7.1.33
-
-# RUN cp $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.conf && \
-#     cp $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf && \
-#     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9071/' $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf && \
-#     sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf && \
-#     sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/7.1.33/php-fpm.d/www.conf
-
-# COPY php/php7.1.ini $ASDF_DATA_DIR/installs/php/7.1.33/conf.d/php.ini
-
-# RUN asdf global php 7.1.33 && \
-#     $ASDF_DATA_DIR/shims/pecl install libsodium imagick && \
-#     echo 'extension=sodium.so' > $ASDF_DATA_DIR/installs/php/7.1.33/conf.d/sodium.ini && \
-#     echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/7.1.33/conf.d/imagick.ini
-
-RUN --mount=type=cache,target=/var/cache/asdf/php-74 \
-    asdf install php 7.4.28
-
-RUN cp $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.conf && \
-    cp $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf && \
-    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9074/' $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf && \
-    sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf && \
-    sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/7.4.28/php-fpm.d/www.conf
-
-COPY php/php7.4.ini $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/php.ini
-
-RUN asdf global php 7.4.28 && \
-    $ASDF_DATA_DIR/shims/pecl install libsodium imagick redis xdebug && \
-    echo 'extension=sodium.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/sodium.ini && \
-    echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/imagick.ini && \
-    echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/redis.ini && \
-    echo 'zend_extension=xdebug' > $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini
-
-RUN echo '' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini && \
-    echo 'xdebug.mode=develop,coverage,debug,profile' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini && \
-    echo 'xdebug.start_with_request=yes' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini && \
-    echo 'xdebug.log_level=0' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini && \
-    echo '' | tee -a $ASDF_DATA_DIR/installs/php/7.4.28/conf.d/xdebug.ini
-
-RUN --mount=type=cache,target=/var/cache/asdf/php-80 \
-    asdf install php 8.0.16
-
-RUN cp $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.conf && \
-    cp $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf && \
-    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9080/' $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf && \
-    sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf && \
-    sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/8.0.16/php-fpm.d/www.conf
-
-COPY php/php8.0.ini $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/php.ini
-
-RUN asdf global php 8.0.16 && \
-    $ASDF_DATA_DIR/shims/pecl install imagick redis xdebug && \
-    echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/imagick.ini && \
-    echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/redis.ini && \
-    echo 'zend_extension=xdebug' > $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini
-
-RUN echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini && \
-    echo 'xdebug.mode=develop,coverage,debug,profile' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini && \
-    echo 'xdebug.start_with_request=yes' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini && \
-    echo 'xdebug.log_level=0' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini && \
-    echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.0.16/conf.d/xdebug.ini
-
-RUN --mount=type=cache,target=/var/cache/asdf/php-81 \
-    asdf install php 8.1.3
-
-RUN cp $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.conf.default $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.conf && \
-    cp $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf.default $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf && \
-    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9081/' $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf && \
-    sed -i 's/user = www-data/user = web/' $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf && \
-    sed -i 's/group = www-data/group = web/' $ASDF_DATA_DIR/installs/php/8.1.3/php-fpm.d/www.conf
-
-COPY php/php8.1.ini $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/php.ini
-
-RUN asdf global php 8.1.3 && \
-    $ASDF_DATA_DIR/shims/pecl install imagick redis xdebug && \
-    echo 'extension=imagick.so' > $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/imagick.ini && \
-    echo 'extension=redis.so' > $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/redis.ini && \
-    echo 'zend_extension=xdebug' > $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini
-
-RUN echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini && \
-    echo 'xdebug.mode=develop,coverage,debug,profile' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini && \
-    echo 'xdebug.start_with_request=yes' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini && \
-    echo 'xdebug.log_level=0' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini && \
-    echo '' | tee -a $ASDF_DATA_DIR/installs/php/8.1.3/conf.d/xdebug.ini
-
-###########################################################################
-# ASDF POST-INSTALL
-###########################################################################
-
-USER root
-
-RUN asdf global php 8.1.3
-
-RUN asdf global nodejs 16.14.0
-
-RUN echo "" | tee -a ~/.zshrc ~/.bashrc && \
-    echo '# asdf-nodejs' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-node-10="asdf global nodejs 10.24.1"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-node-12="asdf global nodejs 12.22.10"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-node-14="asdf global nodejs 14.19.0"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-node-16="asdf global nodejs 16.14.0"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo '# asdf-php' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-php-74="asdf global php 7.4.28"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-php-80="asdf global php 8.0.16"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-php-81="asdf global php 8.1.3"' | tee -a ~/.zshrc ~/.bashrc
-
-USER web
-
-RUN asdf global php 8.1.3
-
-RUN asdf global nodejs 16.14.0
-
-RUN echo "" | tee -a ~/.zshrc ~/.bashrc && \
-    echo '# asdf-nodejs' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-node-10="asdf global nodejs 10.24.1"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-node-12="asdf global nodejs 12.22.10"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-node-14="asdf global nodejs 14.19.0"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-node-16="asdf global nodejs 16.14.0"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo '# asdf-php' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-php-74="asdf global php 7.4.28"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-php-80="asdf global php 8.0.16"' | tee -a ~/.zshrc ~/.bashrc && \
-    echo 'alias use-php-81="asdf global php 8.1.3"' | tee -a ~/.zshrc ~/.bashrc
-
-USER root
-
-RUN chown -R web: $ASDF_DATA_DIR
+RUN chown -R web: ${ASDF_DATA_DIR}
 
 ###########################################################################
 # NPM
@@ -406,16 +263,15 @@ RUN mkdir -p /home/web/.vscode-server/extensions && \
     chown -R web /home/web/.vscode-server
 
 ###########################################################################
-# Startup script
+# STARTUP
 ###########################################################################
 
-USER root
-
+ADD ./install-nodejs.sh /opt/install-nodejs.sh
+ADD ./install-php.sh /opt/install-php.sh
 ADD ./startup.sh /opt/startup.sh
 
-RUN sed -i 's/\r//g' /opt/startup.sh
+RUN sed -i 's/\r//g' /opt/startup.sh /opt/install-nodejs.sh /opt/install-php.sh
 
-CMD ["/bin/bash", "/opt/startup.sh"]
+CMD [ "/bin/bash", "/opt/startup.sh" ]
 
-# Set default work directory
 WORKDIR /var/www

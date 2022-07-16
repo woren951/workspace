@@ -275,14 +275,18 @@ services:
     workspace:
       build:
         context: ./workspace
+      tty: true
       volumes:
         - ${APP_CODE_PATH_HOST}:/var/www${APP_CODE_CONTAINER_FLAG}
         - ${HOME}/.ssh:/home/web/.ssh
         - ${HOME}/.ssh:/root/.ssh
         - ${LOCALHTTPS_PATH}:${LOCALHTTPS_PATH}
-        - ./workspace/nginx/sites:/etc/nginx/sites-available
+        - ./workspace/sites-available:/etc/nginx/sites-available
+        - .asdf-installs:/var/.asdf/installs
         - .bash-history/.zsh_history:/home/web/.zsh_history
         - .bash-history/.bash_history:/home/web/.bash_history
+        - .bash-history/.zsh_history:/root/.zsh_history
+        - .bash-history/.bash_history:/root/.bash_history
         # vscode-server
         - ./.vscode-server/extensions:/home/web/.vscode-server/extensions
         # logs
