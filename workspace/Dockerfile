@@ -213,7 +213,9 @@ RUN echo "" | tee -a ${BASH_FILES} && \
 ENV PATH="/opt/asdf-vm/bin:${PATH}"
 
 RUN asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git && \
-    asdf plugin-add php https://github.com/asdf-community/asdf-php.git
+    asdf plugin add php https://github.com/asdf-community/asdf-php.git
+
+COPY php ${ASDF_DATA_DIR}/php-ini
 
 RUN echo "" | tee -a ${BASH_FILES} && \
     echo '# asdf-switcher' | tee -a ${BASH_FILES} && \

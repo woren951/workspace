@@ -28,10 +28,11 @@ if [ ! -d "${1}/7.4.28" ]; then
         sed -i 's/user = www-data/user = web/' ${1}/7.4.28/php-fpm.d/www.conf && \
         sed -i 's/group = www-data/group = web/' ${1}/7.4.28/php-fpm.d/www.conf
 
-    cp -r php/php7.4.ini ${1}/7.4.28/conf.d/php.ini
+    cp ${ASDF_DATA_DIR}/php-ini/php7.4.ini ${1}/7.4.28/conf.d/php.ini
 
     asdf global php 7.4.28 && \
-        $ASDF_DATA_DIR/shims/pecl install libsodium imagick redis xdebug && \
+        $ASDF_DATA_DIR/shims/pecl channel-update pecl.php.net && \
+        printf "\n" | $ASDF_DATA_DIR/shims/pecl install libsodium imagick redis xdebug && \
         echo 'extension=sodium.so' > ${1}/7.4.28/conf.d/sodium.ini && \
         echo 'extension=imagick.so' > ${1}/7.4.28/conf.d/imagick.ini && \
         echo 'extension=redis.so' > ${1}/7.4.28/conf.d/redis.ini && \
@@ -54,10 +55,11 @@ if [ ! -d "${1}/8.0.16" ]; then
         sed -i 's/user = www-data/user = web/' ${1}/8.0.16/php-fpm.d/www.conf && \
         sed -i 's/group = www-data/group = web/' ${1}/8.0.16/php-fpm.d/www.conf
 
-    cp -r php/php8.0.ini ${1}/8.0.16/conf.d/php.ini
+    cp ${ASDF_DATA_DIR}/php-ini/php8.0.ini ${1}/8.0.16/conf.d/php.ini
 
     asdf global php 8.0.16 && \
-        $ASDF_DATA_DIR/shims/pecl install imagick redis xdebug && \
+        $ASDF_DATA_DIR/shims/pecl channel-update pecl.php.net && \
+        printf "\n" | $ASDF_DATA_DIR/shims/pecl install imagick redis xdebug && \
         echo 'extension=imagick.so' > ${1}/8.0.16/conf.d/imagick.ini && \
         echo 'extension=redis.so' > ${1}/8.0.16/conf.d/redis.ini && \
         echo 'zend_extension=xdebug' > ${1}/8.0.16/conf.d/xdebug.ini
@@ -79,10 +81,11 @@ if [ ! -d "${1}/8.1.3" ]; then
         sed -i 's/user = www-data/user = web/' ${1}/8.1.3/php-fpm.d/www.conf && \
         sed -i 's/group = www-data/group = web/' ${1}/8.1.3/php-fpm.d/www.conf
 
-    cp -r php/php8.1.ini ${1}/8.1.3/conf.d/php.ini
+    cp ${ASDF_DATA_DIR}/php-ini/php8.1.ini ${1}/8.1.3/conf.d/php.ini
 
     asdf global php 8.1.3 && \
-        $ASDF_DATA_DIR/shims/pecl install imagick redis xdebug && \
+        $ASDF_DATA_DIR/shims/pecl channel-update pecl.php.net && \
+        printf "\n" | $ASDF_DATA_DIR/shims/pecl install imagick redis xdebug && \
         echo 'extension=imagick.so' > ${1}/8.1.3/conf.d/imagick.ini && \
         echo 'extension=redis.so' > ${1}/8.1.3/conf.d/redis.ini && \
         echo 'zend_extension=xdebug' > ${1}/8.1.3/conf.d/xdebug.ini
