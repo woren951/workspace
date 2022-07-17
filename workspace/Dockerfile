@@ -216,6 +216,8 @@ RUN asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git && \
     asdf plugin-add php https://github.com/asdf-community/asdf-php.git
 
 RUN echo "" | tee -a ${BASH_FILES} && \
+    echo '# asdf-switcher' | tee -a ${BASH_FILES} && \
+    echo 'alias switch="bash /opt/switch.sh"' | tee -a ${BASH_FILES} && \
     echo '# asdf-nodejs' | tee -a ${BASH_FILES} && \
     echo 'alias use-nodejs-10="asdf global nodejs 10.24.1"' | tee -a ${BASH_FILES} && \
     echo 'alias use-nodejs-12="asdf global nodejs 12.22.10"' | tee -a ${BASH_FILES} && \
@@ -266,11 +268,11 @@ RUN mkdir -p /home/web/.vscode-server/extensions && \
 # STARTUP
 ###########################################################################
 
+ADD --chown=web: ./switch.sh /opt/switch.sh
+
 ADD ./install-nodejs.sh /opt/install-nodejs.sh
 ADD ./install-php.sh /opt/install-php.sh
 ADD ./startup.sh /opt/startup.sh
-
-RUN sed -i 's/\r//g' /opt/startup.sh /opt/install-nodejs.sh /opt/install-php.sh
 
 CMD [ "/bin/bash", "/opt/startup.sh" ]
 
