@@ -27,7 +27,8 @@ USER root
 
 COPY locales /usr/share/i18n/locales
 
-RUN echo 'de_DE.UTF-8 UTF-8' >> /etc/locale.gen && \
+RUN echo 'en_GB.UTF-8 UTF-8' >> /etc/locale.gen && \
+    echo 'de_DE.UTF-8 UTF-8' >> /etc/locale.gen && \
     echo 'fr_FR.UTF-8 UTF-8' >> /etc/locale.gen && \
     echo 'ru_RU.UTF-8 UTF-8' >> /etc/locale.gen && \
     echo 'uk_UA.UTF-8 UTF-8' >> /etc/locale.gen
