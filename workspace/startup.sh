@@ -11,6 +11,7 @@ asdf global php 8.1.3
 # Configuration asdf for web user
 cp /root/.tool-versions /home/web/.tool-versions
 chown -R web: /home/web/.tool-versions
+chown -R web: ${ASDF_DATA_DIR}
 asdf reshim
 
 # Start php-fpm in foreground
