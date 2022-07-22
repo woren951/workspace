@@ -89,7 +89,7 @@ RUN pacman -S --noconfirm openssh
 USER root
 
 RUN --mount=type=cache,target=/var/cache/python \
-    pacman -S --noconfirm python
+    pacman -S --noconfirm python python-pip
 
 ###########################################################################
 # GO
@@ -266,6 +266,14 @@ USER root
 
 RUN mkdir -p /home/web/.vscode-server/extensions && \
     chown -R web /home/web/.vscode-server
+
+###########################################################################
+# LOCALHTTPS
+###########################################################################
+
+USER root
+
+RUN pip install localhttps
 
 ###########################################################################
 # STARTUP

@@ -276,11 +276,13 @@ services:
       build:
         context: ./workspace
       tty: true
+      environment:
+        - LOCALHTTPS_DATA=${LOCALHTTPS_DATA}
       volumes:
         - ${APP_CODE_PATH_HOST}:/var/www${APP_CODE_CONTAINER_FLAG}
         - ${HOME}/.ssh:/home/web/.ssh
         - ${HOME}/.ssh:/root/.ssh
-        - ${LOCALHTTPS_PATH}:${LOCALHTTPS_PATH}
+        - ${LOCALHTTPS_DATA}:${LOCALHTTPS_DATA}
         - ./workspace/sites-available:/etc/nginx/sites-available
         - .asdf-installs:/var/.asdf/installs
         - .bash-history/.zsh_history:/home/web/.zsh_history
@@ -291,7 +293,10 @@ services:
         - ./.vscode-server/extensions:/home/web/.vscode-server/extensions
         # logs
         - ./.logs/nginx:/var/log/nginx
+      extra_hosts:
+        - "node-webserver.test:0.0.0.0"
       ports:
         - "80:80"
         - "443:443"
         - "3010:3010"
+        - "8080:8080"
