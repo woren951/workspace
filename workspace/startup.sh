@@ -15,9 +15,12 @@ chown -R web: ${ASDF_DATA_DIR}
 asdf reshim
 
 # Start php-fpm in foreground
-$ASDF_DATA_DIR/installs/php/7.4.28/sbin/php-fpm
-$ASDF_DATA_DIR/installs/php/8.0.16/sbin/php-fpm
-$ASDF_DATA_DIR/installs/php/8.1.3/sbin/php-fpm
+${ASDF_DATA_DIR}/installs/php/7.4.28/sbin/php-fpm
+${ASDF_DATA_DIR}/installs/php/8.0.16/sbin/php-fpm
+${ASDF_DATA_DIR}/installs/php/8.1.3/sbin/php-fpm
+
+# Trust localhttps certificates
+sudo trust anchor --store ${LOCALHTTPS_DATA}/CertificationAuthorities/default.pem
 
 # Start nginx in foreground
 nginx
