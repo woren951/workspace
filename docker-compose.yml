@@ -276,7 +276,6 @@ services:
       build:
         context: ./workspace
       tty: true
-      init: true
       environment:
         - LOCALHTTPS_DATA=${LOCALHTTPS_DATA}
       volumes:
