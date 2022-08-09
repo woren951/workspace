@@ -73,7 +73,7 @@ fi
 
 # installing php-8.1.3 if not installed
 if [ ! -d "${1}/8.1.3" ]; then
-    asdf install php 8.1.3
+    PHP_CONFIGURE_OPTIONS="--with-openssl --with-curl --with-zlib --with-readline --with-gettext --with-sodium" asdf install php 8.1.3
 
     cp ${1}/8.1.3/php-fpm.conf.default ${1}/8.1.3/php-fpm.conf && \
         cp ${1}/8.1.3/php-fpm.d/www.conf.default ${1}/8.1.3/php-fpm.d/www.conf && \
