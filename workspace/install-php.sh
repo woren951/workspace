@@ -20,7 +20,7 @@
 
 # installing php-7.4.28 if not installed
 if [ ! -d "${1}/7.4.28" ]; then
-    asdf install php 7.4.28
+    PHP_CONFIGURE_OPTIONS="--with-openssl --with-curl --with-zlib --with-readline --with-gettext --with-xsl" asdf install php 7.4.28
 
     cp ${1}/7.4.28/php-fpm.conf.default ${1}/7.4.28/php-fpm.conf && \
         cp ${1}/7.4.28/php-fpm.d/www.conf.default ${1}/7.4.28/php-fpm.d/www.conf && \
