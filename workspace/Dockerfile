@@ -168,10 +168,10 @@ RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
 # GOOGLE CHROME
 ###########################################################################
 
-USER web
+# USER web
 
-RUN --mount=type=cache,target=/var/cache/google-chrome \
-    yay -S --noconfirm google-chrome
+# RUN --mount=type=cache,target=/var/cache/google-chrome \
+#     yay -S --noconfirm google-chrome
 
 ###########################################################################
 # LOCATE
@@ -182,14 +182,6 @@ USER root
 RUN pacman -S --noconfirm mlocate
 
 RUN updatedb
-
-###########################################################################
-# XDEBUG
-###########################################################################
-
-USER root
-
-RUN pacman -S --noconfirm xdebug
 
 ###########################################################################
 # ASDF
@@ -214,9 +206,7 @@ RUN echo "" | tee -a ${BASH_FILES} && \
 ENV PATH="/opt/asdf-vm/bin:${PATH}"
 
 RUN asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git && \
-    asdf plugin add php https://github.com/asdf-community/asdf-php.git
-
-COPY php ${ASDF_DATA_DIR}/php-ini
+    asdf plugin add php https://github.com/Tarik02/asdf-php.git
 
 RUN echo "" | tee -a ${BASH_FILES} && \
     echo '# asdf-switcher' | tee -a ${BASH_FILES} && \
@@ -227,9 +217,11 @@ RUN echo "" | tee -a ${BASH_FILES} && \
     echo 'alias use-nodejs-14="asdf global nodejs 14.19.0"' | tee -a ${BASH_FILES} && \
     echo 'alias use-nodejs-16="asdf global nodejs 16.14.0"' | tee -a ${BASH_FILES} && \
     echo '# asdf-php' | tee -a ${BASH_FILES} && \
+    echo 'alias use-php-56="asdf global php 5.6.40"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-php-74="asdf global php 7.1.33"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-74="asdf global php 7.4.28"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-80="asdf global php 8.0.16"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-81="asdf global php 8.1.3"' | tee -a ${BASH_FILES}
+    echo 'alias use-php-80="asdf global php 8.0.23"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-php-81="asdf global php 8.1.10"' | tee -a ${BASH_FILES}
 
 USER root
 
