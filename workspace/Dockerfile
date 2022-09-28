@@ -157,7 +157,10 @@ RUN sh install.sh
 RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
     sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel5 npm yarn history-substring-search)/' ~/.zshrc && \
     echo "" | tee -a ~/.zshrc && \
-    echo 'setopt HIST_IGNORE_ALL_DUPS' | tee -a ~/.zshrc
+    echo "# history plugin configs" | tee -a ~/.zshrc && \
+    echo 'setopt HIST_IGNORE_ALL_DUPS' | tee -a ~/.zshrc && \
+    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="fg=green,bold"' | tee -a ~/.zshrc && \
+    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red,bold"' | tee -a ~/.zshrc
 
 USER web
 
@@ -166,7 +169,10 @@ RUN sh install.sh
 RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
     sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel5 npm yarn history-substring-search)/' ~/.zshrc && \
     echo "" | tee -a ~/.zshrc && \
-    echo 'setopt HIST_IGNORE_ALL_DUPS' | tee -a ~/.zshrc
+    echo "# history plugin configs" | tee -a ~/.zshrc && \
+    echo 'setopt HIST_IGNORE_ALL_DUPS' | tee -a ~/.zshrc && \
+    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="fg=green,bold"' | tee -a ~/.zshrc && \
+    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red,bold"' | tee -a ~/.zshrc
 
 ###########################################################################
 # GOOGLE CHROME
