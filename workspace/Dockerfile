@@ -155,14 +155,18 @@ RUN wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.
 RUN sh install.sh
 
 RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
-    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel npm yarn)/' ~/.zshrc
+    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel5 npm yarn history-substring-search)/' ~/.zshrc && \
+    echo "" | tee -a ~/.zshrc && \
+    echo 'setopt HIST_IGNORE_ALL_DUPS' | tee -a ~/.zshrc
 
 USER web
 
 RUN sh install.sh
 
 RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
-    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel npm yarn)/' ~/.zshrc
+    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel5 npm yarn history-substring-search)/' ~/.zshrc && \
+    echo "" | tee -a ~/.zshrc && \
+    echo 'setopt HIST_IGNORE_ALL_DUPS' | tee -a ~/.zshrc
 
 ###########################################################################
 # GOOGLE CHROME
