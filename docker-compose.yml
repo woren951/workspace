@@ -284,7 +284,8 @@ services:
         - ${HOME}/.ssh:/root/.ssh
         - ${LOCALHTTPS_DATA}:${LOCALHTTPS_DATA}
         - ./workspace/sites-available:/etc/nginx/sites-available
-        - .asdf-installs:/var/.asdf/installs
+        - .asdf/data:/home/.asdf/data
+        - .asdf/vm:/home/.asdf/vm
         - .bash-history/.zsh_history:/home/web/.zsh_history
         - .bash-history/.bash_history:/home/web/.bash_history
         - .bash-history/.zsh_history:/root/.zsh_history

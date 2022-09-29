@@ -199,24 +199,19 @@ RUN updatedb
 
 USER root
 
-ENV ASDF_DATA_DIR="/var/.asdf"
-
 ENV BASH_FILES="/root/.zshrc /root/.bashrc /home/web/.zshrc /home/web/.bashrc"
 
-USER web
+ENV ASDF_DIR="/home/.asdf/vm"
+RUN mkdir -p ${ASDF_DIR}
 
-RUN yay -S --noconfirm asdf-vm
+ENV ASDF_DATA_DIR="/home/.asdf/data"
+RUN mkdir -p ${ASDF_DATA_DIR}
 
-USER root
+ENV PATH="${ASDF_DIR}/bin:${PATH}"
 
 RUN echo "" | tee -a ${BASH_FILES} && \
     echo '# asdf' | tee -a ${BASH_FILES} && \
-    echo 'source /opt/asdf-vm/asdf.sh' | tee -a ${BASH_FILES}
-
-ENV PATH="/opt/asdf-vm/bin:${PATH}"
-
-RUN asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git && \
-    asdf plugin add php https://github.com/Tarik02/asdf-php.git
+    echo 'source ${ASDF_DIR}/asdf.sh' | tee -a ${BASH_FILES}
 
 RUN echo "" | tee -a ${BASH_FILES} && \
     echo '# asdf-switcher' | tee -a ${BASH_FILES} && \
@@ -232,10 +227,6 @@ RUN echo "" | tee -a ${BASH_FILES} && \
     echo 'alias use-php-74="asdf global php 7.4.28"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-80="asdf global php 8.0.23"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-81="asdf global php 8.1.10"' | tee -a ${BASH_FILES}
-
-USER root
-
-RUN chown -R web: ${ASDF_DATA_DIR}
 
 ###########################################################################
 # NPM
@@ -287,6 +278,6 @@ ADD ./install-nodejs.sh /opt/install-nodejs.sh
 ADD ./install-php.sh /opt/install-php.sh
 ADD ./startup.sh /opt/startup.sh
 
-CMD [ "/bin/bash", "/opt/startup.sh" ]
+CMD [ "su", "web", "/opt/startup.sh" ]
 
 WORKDIR /var/www

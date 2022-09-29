@@ -12,8 +12,7 @@ if [ ! -d "${1}/5.6.40" ]; then
 
     asdf global php 5.6.40 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
-        printf "\n" | ${ASDF_DATA_DIR}/shims/pecl install libsodium imagick redis && \
-        echo 'extension=sodium.so' > ${1}/5.6.40/etc/conf.d/sodium.ini && \
+        printf "\n" | ${ASDF_DATA_DIR}/shims/pecl install imagick redis-2.2.8 && \
         echo 'extension=imagick.so' > ${1}/5.6.40/etc/conf.d/imagick.ini && \
         echo 'extension=redis.so' > ${1}/5.6.40/etc/conf.d/redis.ini
 fi

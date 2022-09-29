@@ -1,28 +1,42 @@
 #!/bin/bash
 
-# Install nodejs
+# Configuration asdf for web user
+sudo chown -R web: ${ASDF_DIR}
+sudo chown -R web: ${ASDF_DATA_DIR}
+
+# Install asdf if not installed
+if [ ! -f "${ASDF_DIR}/asdf.sh" ]; then
+    git clone https://github.com/asdf-vm/asdf.git ${ASDF_DIR} --branch v0.10.2
+fi
+
+# Install asdf nodejs plugin and nodejs versions if not installed
+if [ ! -d "${ASDF_DATA_DIR}/plugins/nodejs" ]; then
+    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+fi
+
 bash /opt/install-nodejs.sh ${ASDF_DATA_DIR}/installs/nodejs
 asdf global nodejs 16.14.0
 
-# Install php
+# Install asdf php plugin and php versions if not installed
+if [ ! -d "${ASDF_DATA_DIR}/plugins/php" ]; then
+    asdf plugin add php https://github.com/Tarik02/asdf-php.git
+fi
+
 bash /opt/install-php.sh ${ASDF_DATA_DIR}/installs/php
 asdf global php 8.1.10
 
-# Configuration asdf for web user
-cp /root/.tool-versions /home/web/.tool-versions
-chown -R web: /home/web/.tool-versions
-chown -R web: ${ASDF_DATA_DIR}
+# Asdf reshim
 asdf reshim
 
 # Start php-fpm in foreground
-${ASDF_DATA_DIR}/installs/php/5.6.40/sbin/php-fpm
-${ASDF_DATA_DIR}/installs/php/7.1.33/sbin/php-fpm
-${ASDF_DATA_DIR}/installs/php/7.4.28/sbin/php-fpm
-${ASDF_DATA_DIR}/installs/php/8.0.23/sbin/php-fpm
-${ASDF_DATA_DIR}/installs/php/8.1.10/sbin/php-fpm
+sudo ${ASDF_DATA_DIR}/installs/php/5.6.40/sbin/php-fpm
+sudo ${ASDF_DATA_DIR}/installs/php/7.1.33/sbin/php-fpm
+sudo ${ASDF_DATA_DIR}/installs/php/7.4.28/sbin/php-fpm
+sudo ${ASDF_DATA_DIR}/installs/php/8.0.23/sbin/php-fpm
+sudo ${ASDF_DATA_DIR}/installs/php/8.1.10/sbin/php-fpm
 
 # Trust localhttps certificates
 sudo trust anchor --store ${LOCALHTTPS_DATA}/CertificationAuthorities/default.pem
 
 # Start nginx in foreground
-nginx
+sudo nginx
