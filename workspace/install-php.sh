@@ -6,9 +6,9 @@ if [ ! -d "${1}/5.6.40" ]; then
 
     PHP_BUILD_CONFIGURE_OPTS="--with-gettext" asdf install php 5.6.40
 
-    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9056/' ${1}/5.6.40/etc/php-fpm.d/www.conf && \
-    sed -i 's/user = nobody/user = web/' ${1}/5.6.40/etc/php-fpm.d/www.conf && \
-    sed -i 's/group = nobody/group = web/' ${1}/5.6.40/etc/php-fpm.d/www.conf
+    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9056/' ${1}/5.6.40/etc/php-fpm.conf && \
+    sed -i 's/user = nobody/user = web/' ${1}/5.6.40/etc/php-fpm.conf && \
+    sed -i 's/group = nobody/group = web/' ${1}/5.6.40/etc/php-fpm.conf
 
     asdf global php 5.6.40 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \

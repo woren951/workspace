@@ -286,10 +286,8 @@ services:
         - ./workspace/sites-available:/etc/nginx/sites-available
         - .asdf/data:/home/.asdf/data
         - .asdf/vm:/home/.asdf/vm
-        - .bash-history/.zsh_history:/home/web/.zsh_history
-        - .bash-history/.bash_history:/home/web/.bash_history
-        - .bash-history/.zsh_history:/root/.zsh_history
-        - .bash-history/.bash_history:/root/.bash_history
+        - .bash-history/root:/root/.bash-history
+        - .bash-history/web:/home/web/.bash-history
         # vscode-server
         - ./.vscode-server/extensions:/home/web/.vscode-server/extensions
         # logs
