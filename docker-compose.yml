@@ -17,6 +17,7 @@ volumes:
     driver: local
   elasticsearch:
     driver: local
+  vscode-extensions:
 
 services:
 ### MySQL ################################################
@@ -289,7 +290,7 @@ services:
         - .bash-history/root:/root/.bash-history
         - .bash-history/web:/home/web/.bash-history
         # vscode-server
-        - ./.vscode-server/extensions:/home/web/.vscode-server/extensions
+        - vscode-extensions:/home/web/.vscode-server/extensions
         # logs
         - ./.logs/nginx:/var/log/nginx
       extra_hosts:
