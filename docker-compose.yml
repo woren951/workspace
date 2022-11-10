@@ -285,6 +285,7 @@ services:
         - ${HOME}/.ssh:/root/.ssh
         - ${LOCALHTTPS_DATA}:${LOCALHTTPS_DATA}
         - ./workspace/sites-available:/etc/nginx/sites-available
+        - ./workspace/web-shared:/home/web/.web-shared
         - .asdf/data:/home/.asdf/data
         - .asdf/vm:/home/.asdf/vm
         - .bash-history/root:/root/.bash-history

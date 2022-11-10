@@ -6,6 +6,8 @@
 
 FROM archlinux:base
 
+LABEL maintainer="Oleh Kotiai <woren951@gmail.com>"
+
 # Start as root
 USER root
 
@@ -59,12 +61,12 @@ USER root
 RUN pacman -S --noconfirm wget
 
 ###########################################################################
-# GZIP
+# ZIP
 ###########################################################################
 
 USER root
 
-RUN pacman -S --noconfirm gzip
+RUN pacman -S --noconfirm gzip unzip
 
 ###########################################################################
 # GIT

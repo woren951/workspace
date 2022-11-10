@@ -28,6 +28,9 @@ asdf global php 8.1.10
 # Asdf reshim
 asdf reshim
 
+# Copy shared files
+cp -r /home/web/.web-shared/. /home/web/
+
 # Start php-fpm in foreground
 sudo ${ASDF_DATA_DIR}/installs/php/5.6.40/sbin/php-fpm
 sudo ${ASDF_DATA_DIR}/installs/php/7.1.33/sbin/php-fpm
