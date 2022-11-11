@@ -4,7 +4,9 @@
 if [ ! -d "${1}/5.6.40" ]; then
     asdf php update php-build
 
-    PHP_BUILD_CONFIGURE_OPTS="--with-gettext" asdf install php 5.6.40
+    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib/openssl-1.1/pkgconfig" \
+        PHP_BUILD_CONFIGURE_OPTS="--with-gettext" \
+        asdf install php 5.6.40
 
     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9056/' ${1}/5.6.40/etc/php-fpm.conf && \
     sed -i 's/user = nobody/user = web/' ${1}/5.6.40/etc/php-fpm.conf && \
@@ -21,7 +23,9 @@ fi
 if [ ! -d "${1}/7.1.33" ]; then
     asdf php update php-build
 
-    PHP_BUILD_CONFIGURE_OPTS="--with-gettext" asdf install php 7.1.33
+    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib/openssl-1.1/pkgconfig" \
+        PHP_BUILD_CONFIGURE_OPTS="--with-gettext" \
+        asdf install php 7.1.33
 
     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9071/' ${1}/7.1.33/etc/php-fpm.d/www.conf && \
     sed -i 's/user = nobody/user = web/' ${1}/7.1.33/etc/php-fpm.d/www.conf && \
@@ -39,7 +43,9 @@ fi
 if [ ! -d "${1}/7.4.28" ]; then
     asdf php update php-build
 
-    PHP_BUILD_CONFIGURE_OPTS="--with-gettext --with-sodium" asdf install php 7.4.28
+    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib/openssl-1.1/pkgconfig" \
+        PHP_BUILD_CONFIGURE_OPTS="--with-gettext --with-sodium" \
+        asdf install php 7.4.28
 
     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9074/' ${1}/7.4.28/etc/php-fpm.d/www.conf && \
     sed -i 's/user = nobody/user = web/' ${1}/7.4.28/etc/php-fpm.d/www.conf && \
@@ -56,7 +62,9 @@ fi
 if [ ! -d "${1}/8.0.23" ]; then
     asdf php update php-build
 
-    PHP_BUILD_CONFIGURE_OPTS="--with-gettext --with-sodium" asdf install php 8.0.23
+    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib/openssl-1.1/pkgconfig" \
+        PHP_BUILD_CONFIGURE_OPTS="--with-gettext --with-sodium" \
+        asdf install php 8.0.23
 
     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9080/' ${1}/8.0.23/etc/php-fpm.d/www.conf && \
     sed -i 's/user = nobody/user = web/' ${1}/8.0.23/etc/php-fpm.d/www.conf && \
