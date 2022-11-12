@@ -81,7 +81,7 @@ fi
 if [ ! -d "${1}/8.1.10" ]; then
     asdf php update php-build
 
-    PHP_BUILD_CONFIGURE_OPTS="--with-gettext --with-sodium" asdf install php 8.1.10
+    PHP_BUILD_CONFIGURE_OPTS="--with-gettext --with-sodium --with-pgsql --with-pdo-pgsql" asdf install php 8.1.10
 
     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9081/' ${1}/8.1.10/etc/php-fpm.d/www.conf && \
     sed -i 's/user = nobody/user = web/' ${1}/8.1.10/etc/php-fpm.d/www.conf && \

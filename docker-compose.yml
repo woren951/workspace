@@ -68,6 +68,8 @@ services:
         - ${DATA_PATH_HOST}/mongo-config:/data/configdb
       ports:
         - "${MONGO_PORT}:27017"
+      depends_on:
+        - mongo-webui
 
 ### MongoWebUI ################################################
     mongo-webui:
@@ -81,8 +83,6 @@ services:
         - ${DATA_PATH_HOST}/mongo-webui:/data/db
       ports:
         - "${MONGO_WEBUI_PORT}:3000"
-      depends_on:
-        - mongo
 
 ### PostgreSQL ###########################################
     postgres:
@@ -99,6 +99,8 @@ services:
         - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       ports:
         - "${POSTGRES_PORT}:5432"
+      depends_on:
+        - pgadmin
 
 ### pgAdmin ##############################################
     pgadmin:
@@ -111,8 +113,6 @@ services:
         - "${PGADMIN_PORT}:80"
       volumes:
         - ${DATA_PATH_HOST}/pgadmin:/var/lib/pgadmin
-      depends_on:
-        - postgres
 
 ### Redis ################################################
     redis:
