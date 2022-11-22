@@ -89,7 +89,9 @@ if [ ! -d "${1}/8.1.10" ]; then
 
     asdf global php 8.1.10 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
-        printf "\n" | ${ASDF_DATA_DIR}/shims/pecl install imagick redis && \
+        printf "\n" | ${ASDF_DATA_DIR}/shims/pecl install imagick redis grpc protobuf && \
         echo 'extension=imagick.so' > ${1}/8.1.10/etc/conf.d/imagick.ini && \
-        echo 'extension=redis.so' > ${1}/8.1.10/etc/conf.d/redis.ini
+        echo 'extension=redis.so' > ${1}/8.1.10/etc/conf.d/redis.ini && \
+        echo 'extension=grpc.so' > ${1}/8.1.10/etc/conf.d/grpc.ini && \
+        echo 'extension=protobuf.so' > ${1}/8.1.10/etc/conf.d/protobuf.ini
 fi
