@@ -39,59 +39,59 @@ if [ ! -d "${1}/7.1.33" ]; then
         echo 'extension=redis.so' > ${1}/7.1.33/etc/conf.d/redis.ini
 fi
 
-# installing php-7.4.28 if not installed
-if [ ! -d "${1}/7.4.28" ]; then
+# installing php-7.4.33 if not installed
+if [ ! -d "${1}/7.4.33" ]; then
     asdf php update php-build
 
     PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib/openssl-1.1/pkgconfig" \
         PHP_BUILD_CONFIGURE_OPTS="--with-gettext --with-sodium" \
-        asdf install php 7.4.28
+        asdf install php 7.4.33
 
-    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9074/' ${1}/7.4.28/etc/php-fpm.d/www.conf && \
-    sed -i 's/user = nobody/user = web/' ${1}/7.4.28/etc/php-fpm.d/www.conf && \
-    sed -i 's/group = nobody/group = web/' ${1}/7.4.28/etc/php-fpm.d/www.conf
+    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9074/' ${1}/7.4.33/etc/php-fpm.d/www.conf && \
+    sed -i 's/user = nobody/user = web/' ${1}/7.4.33/etc/php-fpm.d/www.conf && \
+    sed -i 's/group = nobody/group = web/' ${1}/7.4.33/etc/php-fpm.d/www.conf
 
-    asdf global php 7.4.28 && \
+    asdf global php 7.4.33 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
         printf "\n" | ${ASDF_DATA_DIR}/shims/pecl install imagick redis && \
-        echo 'extension=imagick.so' > ${1}/7.4.28/etc/conf.d/imagick.ini && \
-        echo 'extension=redis.so' > ${1}/7.4.28/etc/conf.d/redis.ini
+        echo 'extension=imagick.so' > ${1}/7.4.33/etc/conf.d/imagick.ini && \
+        echo 'extension=redis.so' > ${1}/7.4.33/etc/conf.d/redis.ini
 fi
 
-# installing php-8.0.23 if not installed
-if [ ! -d "${1}/8.0.23" ]; then
+# installing php-8.0.26 if not installed
+if [ ! -d "${1}/8.0.26" ]; then
     asdf php update php-build
 
     PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib/openssl-1.1/pkgconfig" \
         PHP_BUILD_CONFIGURE_OPTS="--with-gettext --with-sodium" \
-        asdf install php 8.0.23
+        asdf install php 8.0.26
 
-    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9080/' ${1}/8.0.23/etc/php-fpm.d/www.conf && \
-    sed -i 's/user = nobody/user = web/' ${1}/8.0.23/etc/php-fpm.d/www.conf && \
-    sed -i 's/group = nobody/group = web/' ${1}/8.0.23/etc/php-fpm.d/www.conf
+    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9080/' ${1}/8.0.26/etc/php-fpm.d/www.conf && \
+    sed -i 's/user = nobody/user = web/' ${1}/8.0.26/etc/php-fpm.d/www.conf && \
+    sed -i 's/group = nobody/group = web/' ${1}/8.0.26/etc/php-fpm.d/www.conf
 
-    asdf global php 8.0.23 && \
+    asdf global php 8.0.26 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
         printf "\n" | ${ASDF_DATA_DIR}/shims/pecl install imagick redis && \
-        echo 'extension=imagick.so' > ${1}/8.0.23/etc/conf.d/imagick.ini && \
-        echo 'extension=redis.so' > ${1}/8.0.23/etc/conf.d/redis.ini
+        echo 'extension=imagick.so' > ${1}/8.0.26/etc/conf.d/imagick.ini && \
+        echo 'extension=redis.so' > ${1}/8.0.26/etc/conf.d/redis.ini
 fi
 
-# installing php-8.1.10 if not installed
-if [ ! -d "${1}/8.1.10" ]; then
+# installing php-8.1.13 if not installed
+if [ ! -d "${1}/8.1.13" ]; then
     asdf php update php-build
 
-    PHP_BUILD_CONFIGURE_OPTS="--with-gettext --with-sodium --with-pgsql --with-pdo-pgsql" asdf install php 8.1.10
+    PHP_BUILD_CONFIGURE_OPTS="--with-gettext --with-sodium --with-pgsql --with-pdo-pgsql" asdf install php 8.1.13
 
-    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9081/' ${1}/8.1.10/etc/php-fpm.d/www.conf && \
-    sed -i 's/user = nobody/user = web/' ${1}/8.1.10/etc/php-fpm.d/www.conf && \
-    sed -i 's/group = nobody/group = web/' ${1}/8.1.10/etc/php-fpm.d/www.conf
+    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9081/' ${1}/8.1.13/etc/php-fpm.d/www.conf && \
+    sed -i 's/user = nobody/user = web/' ${1}/8.1.13/etc/php-fpm.d/www.conf && \
+    sed -i 's/group = nobody/group = web/' ${1}/8.1.13/etc/php-fpm.d/www.conf
 
-    asdf global php 8.1.10 && \
+    asdf global php 8.1.13 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
         printf "\n" | ${ASDF_DATA_DIR}/shims/pecl install imagick redis grpc protobuf && \
-        echo 'extension=imagick.so' > ${1}/8.1.10/etc/conf.d/imagick.ini && \
-        echo 'extension=redis.so' > ${1}/8.1.10/etc/conf.d/redis.ini && \
-        echo 'extension=grpc.so' > ${1}/8.1.10/etc/conf.d/grpc.ini && \
-        echo 'extension=protobuf.so' > ${1}/8.1.10/etc/conf.d/protobuf.ini
+        echo 'extension=imagick.so' > ${1}/8.1.13/etc/conf.d/imagick.ini && \
+        echo 'extension=redis.so' > ${1}/8.1.13/etc/conf.d/redis.ini && \
+        echo 'extension=grpc.so' > ${1}/8.1.13/etc/conf.d/grpc.ini && \
+        echo 'extension=protobuf.so' > ${1}/8.1.13/etc/conf.d/protobuf.ini
 fi

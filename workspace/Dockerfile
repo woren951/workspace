@@ -84,6 +84,10 @@ USER root
 
 RUN pacman -S --noconfirm openssh
 
+RUN ssh-keygen -A
+
+RUN sed -i -e 's/^UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+
 ###########################################################################
 # OPENSSL
 ###########################################################################
@@ -253,9 +257,9 @@ RUN echo "" | tee -a ${BASH_FILES} && \
     echo '# asdf-php' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-56="asdf global php 5.6.40"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-74="asdf global php 7.1.33"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-74="asdf global php 7.4.28"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-80="asdf global php 8.0.23"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-81="asdf global php 8.1.10"' | tee -a ${BASH_FILES}
+    echo 'alias use-php-74="asdf global php 7.4.33"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-php-80="asdf global php 8.0.26"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-php-81="asdf global php 8.1.13"' | tee -a ${BASH_FILES}
 
 ###########################################################################
 # NPM

@@ -23,7 +23,7 @@ if [ ! -d "${ASDF_DATA_DIR}/plugins/php" ]; then
 fi
 
 bash /opt/install-php.sh ${ASDF_DATA_DIR}/installs/php
-asdf global php 8.1.10
+asdf global php 8.1.13
 
 # Asdf reshim
 asdf reshim
@@ -31,12 +31,15 @@ asdf reshim
 # Copy shared files
 cp -r /home/web/.web-shared/. /home/web/
 
+# Start sshd in foreground
+sudo /usr/sbin/sshd
+
 # Start php-fpm in foreground
 sudo ${ASDF_DATA_DIR}/installs/php/5.6.40/sbin/php-fpm
 sudo ${ASDF_DATA_DIR}/installs/php/7.1.33/sbin/php-fpm
-sudo ${ASDF_DATA_DIR}/installs/php/7.4.28/sbin/php-fpm
-sudo ${ASDF_DATA_DIR}/installs/php/8.0.23/sbin/php-fpm
-sudo ${ASDF_DATA_DIR}/installs/php/8.1.10/sbin/php-fpm
+sudo ${ASDF_DATA_DIR}/installs/php/7.4.33/sbin/php-fpm
+sudo ${ASDF_DATA_DIR}/installs/php/8.0.26/sbin/php-fpm
+sudo ${ASDF_DATA_DIR}/installs/php/8.1.13/sbin/php-fpm
 
 # Trust localhttps certificates
 sudo trust anchor --store ${LOCALHTTPS_DATA}/CertificationAuthorities/default.pem
