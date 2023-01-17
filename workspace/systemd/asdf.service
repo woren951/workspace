@@ -1,0 +1,13 @@
+[Unit]
+Description=ASDF install
+After=main.service
+
+[Service]
+ExecStart=/opt/asdf/index.sh
+Restart=no
+Type=oneshot
+TimeoutStartSec=infinity
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

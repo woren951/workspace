@@ -1,0 +1,12 @@
+[Unit]
+Description=Main service
+
+[Service]
+ExecStart=/opt/main.sh
+Restart=no
+Type=oneshot
+TimeoutStartSec=infinity
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

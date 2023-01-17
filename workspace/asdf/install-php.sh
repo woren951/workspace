@@ -95,3 +95,22 @@ if [ ! -d "${1}/8.1.13" ]; then
         echo 'extension=grpc.so' > ${1}/8.1.13/etc/conf.d/grpc.ini && \
         echo 'extension=protobuf.so' > ${1}/8.1.13/etc/conf.d/protobuf.ini
 fi
+
+# installing php-8.2.1 if not installed
+if [ ! -d "${1}/8.2.1" ]; then
+    asdf php update php-build
+
+    PHP_BUILD_CONFIGURE_OPTS="--with-gettext --with-sodium --with-pgsql --with-pdo-pgsql" asdf install php 8.2.1
+
+    sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9082/' ${1}/8.2.1/etc/php-fpm.d/www.conf && \
+    sed -i 's/user = nobody/user = web/' ${1}/8.2.1/etc/php-fpm.d/www.conf && \
+    sed -i 's/group = nobody/group = web/' ${1}/8.2.1/etc/php-fpm.d/www.conf
+
+    asdf global php 8.2.1 && \
+        ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
+        printf "\n" | ${ASDF_DATA_DIR}/shims/pecl install imagick redis grpc protobuf && \
+        echo 'extension=imagick.so' > ${1}/8.2.1/etc/conf.d/imagick.ini && \
+        echo 'extension=redis.so' > ${1}/8.2.1/etc/conf.d/redis.ini && \
+        echo 'extension=grpc.so' > ${1}/8.2.1/etc/conf.d/grpc.ini && \
+        echo 'extension=protobuf.so' > ${1}/8.2.1/etc/conf.d/protobuf.ini
+fi
