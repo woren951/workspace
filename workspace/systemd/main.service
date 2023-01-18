@@ -2,7 +2,7 @@
 Description=Main service
 
 [Service]
-ExecStart=/opt/main.sh
+ExecStart=bash /opt/main.sh
 Restart=no
 Type=oneshot
 TimeoutStartSec=infinity

@@ -1,9 +1,10 @@
 [Unit]
 Description=ASDF install
-After=main.service
+# Wants=main.service
+# After=main.service
 
 [Service]
-ExecStart=/opt/asdf/index.sh
+ExecStart=bash /opt/asdf/index.sh
 Restart=no
 Type=oneshot
 TimeoutStartSec=infinity

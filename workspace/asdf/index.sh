@@ -12,7 +12,7 @@ if [ ! -d "${ASDF_DATA_DIR}/plugins/nodejs" ]; then
     asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 fi
 
-bash ./install-nodejs.sh ${ASDF_DATA_DIR}/installs/nodejs
+/bin/sh -c "/opt/asdf/install-nodejs.sh ${ASDF_DATA_DIR}/installs/nodejs"
 asdf global nodejs 18.11.0
 
 # Install asdf php plugin and php versions if not installed
@@ -20,7 +20,7 @@ if [ ! -d "${ASDF_DATA_DIR}/plugins/php" ]; then
     asdf plugin add php https://github.com/Tarik02/asdf-php.git
 fi
 
-bash ./install-php.sh ${ASDF_DATA_DIR}/installs/php
+/bin/sh -c "/opt/asdf/install-php.sh ${ASDF_DATA_DIR}/installs/php"
 asdf global php 8.1.13
 
 # Asdf reshim
