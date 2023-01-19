@@ -1,6 +1,4 @@
-# Systemctl services start
-systemctl enable /etc/systemd/web/asdf.service
-# systemctl start asdf.service
-
-systemctl enable /etc/systemd/web/nginx.service
-# systemctl start nginx.service
+echo 00000
+/usr/bin/printenv
+echo ${ASDF_DIR}
+echo 11111

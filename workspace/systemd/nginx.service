@@ -1,8 +1,6 @@
 [Unit]
 Description=Nginx service
 Documentation=http://nginx.org/en/docs/
-# Wants=asdf.service
-# After=asdf.service
 
 [Service]
 Type=forking
@@ -12,4 +10,4 @@ ExecReload=/bin/sh -c "/bin/kill -s HUP $(/bin/cat /var/run/nginx.pid)"
 ExecStop=/bin/sh -c "/bin/kill -s TERM $(/bin/cat /var/run/nginx.pid)"
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=asdf.service

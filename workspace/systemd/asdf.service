@@ -1,7 +1,5 @@
 [Unit]
 Description=ASDF install
-# Wants=main.service
-# After=main.service
 
 [Service]
 ExecStart=bash /opt/asdf/index.sh
@@ -11,4 +9,4 @@ TimeoutStartSec=infinity
 RemainAfterExit=yes
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=asdf.service

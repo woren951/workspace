@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Copy shared files
-cp -r /home/web/.web-shared/. /home/web/
+# # Copy shared files
+# cp -r /home/web/.web-shared/. /home/web/
 
-# Trust localhttps certificates
-trust anchor --store ${LOCALHTTPS_DATA}/CertificationAuthorities/default.pem
+# # Trust localhttps certificates
+# trust anchor --store ${LOCALHTTPS_DATA}/CertificationAuthorities/default.pem
 
 # Systemctl enabling and starting
 sudo mount -o remount,rw /sys/fs/cgroup
