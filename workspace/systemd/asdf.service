@@ -1,5 +1,6 @@
 [Unit]
 Description=ASDF install
+Documentation=https://asdf-vm.com/guide/introduction.html
 
 [Service]
 ExecStart=bash /opt/asdf/index.sh
@@ -8,9 +9,10 @@ Type=oneshot
 TimeoutStartSec=infinity
 RemainAfterExit=yes
 User=web
-Environment="PATH=/home/.asdf/data/shims:/home/.asdf/vm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-Environment="ASDF_DIR=/home/.asdf/vm"
-Environment="ASDF_DATA_DIR=/home/.asdf/data"
+PassEnvironment=PATH
+PassEnvironment=ASDF_DIR
+PassEnvironment=ASDF_DATA_DIR
+PassEnvironment=LOCALHTTPS_DATA
 
 [Install]
-WantedBy=asdf.service
+WantedBy=main.service

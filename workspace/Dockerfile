@@ -308,9 +308,11 @@ RUN pip install localhttps
 
 USER root
 
+ADD ./main.sh /opt/main.sh
 ADD --chown=web: ./asdf/ /opt/asdf/
-ADD --chown=web: ./main.sh /opt/main.sh
 ADD --chown=web: ./switch.sh /opt/switch.sh
+
+RUN chmod u+x -R /opt/asdf/
 
 ADD ./startup.sh /opt/startup.sh
 

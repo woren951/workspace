@@ -2,8 +2,6 @@
 Description=Main service
 
 [Service]
-# ExecStartPre=cp -r /home/web/.web-shared/. /home/web/
-# ExecStartPre=trust anchor --store ${LOCALHTTPS_DATA}/CertificationAuthorities/default.pem
 ExecStartPre=systemctl enable /etc/systemd/web/asdf.service
 ExecStartPre=systemctl enable /etc/systemd/web/nginx.service
 
@@ -12,6 +10,10 @@ Restart=no
 Type=oneshot
 TimeoutStartSec=infinity
 RemainAfterExit=yes
+PassEnvironment=PATH
+PassEnvironment=ASDF_DIR
+PassEnvironment=ASDF_DATA_DIR
+PassEnvironment=LOCALHTTPS_DATA
 
 [Install]
 WantedBy=multi-user.target
