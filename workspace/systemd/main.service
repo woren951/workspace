@@ -2,7 +2,7 @@
 Description=Main service
 
 [Service]
-ExecStartPre=cp -r /home/web/.web-shared/. /home/web/
+# ExecStartPre=cp -r /home/web/.web-shared/. /home/web/
 # ExecStartPre=trust anchor --store ${LOCALHTTPS_DATA}/CertificationAuthorities/default.pem
 ExecStartPre=systemctl enable /etc/systemd/web/asdf.service
 ExecStartPre=systemctl enable /etc/systemd/web/nginx.service

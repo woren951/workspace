@@ -7,6 +7,10 @@ Restart=no
 Type=oneshot
 TimeoutStartSec=infinity
 RemainAfterExit=yes
+User=web
+Environment="PATH=/home/.asdf/data/shims:/home/.asdf/vm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="ASDF_DIR=/home/.asdf/vm"
+Environment="ASDF_DATA_DIR=/home/.asdf/data"
 
 [Install]
 WantedBy=asdf.service

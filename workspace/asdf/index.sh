@@ -1,7 +1,3 @@
-# Configuration asdf for web user
-sudo chown -R web: ${ASDF_DIR}
-sudo chown -R web: ${ASDF_DATA_DIR}
-
 # Install asdf if not installed
 if [ ! -f "${ASDF_DIR}/asdf.sh" ]; then
     git clone https://github.com/asdf-vm/asdf.git ${ASDF_DIR} --branch v0.10.2
