@@ -288,8 +288,6 @@ services:
             - LOCALHTTPS_DATA=${LOCALHTTPS_DATA}
         volumes:
             - ${APP_CODE_PATH_HOST}:/var/www${APP_CODE_CONTAINER_FLAG}
-            - ${HOME}/.ssh:/home/web/.ssh
-            - ${HOME}/.ssh:/root/.ssh
             - ${LOCALHTTPS_DATA}:${LOCALHTTPS_DATA}
             - ./workspace/sites-available:/etc/nginx/sites-available
             - ./workspace/systemd:/etc/systemd/web

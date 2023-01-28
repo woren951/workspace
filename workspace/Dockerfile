@@ -77,18 +77,6 @@ USER root
 RUN pacman -S --noconfirm git
 
 ###########################################################################
-# OPENSSH
-###########################################################################
-
-USER root
-
-RUN pacman -S --noconfirm openssh
-
-RUN ssh-keygen -A
-
-RUN sed -i -e 's/^UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
-
-###########################################################################
 # OPENSSL
 ###########################################################################
 
@@ -145,6 +133,25 @@ RUN groupadd -g ${PGID} web && \
     useradd -l -r -u ${PUID} -g web -m web && \
     usermod -p "*" web -s /bin/bash && \
     echo "web ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/web
+
+###########################################################################
+# SSH
+###########################################################################
+
+USER root
+
+RUN pacman -S --noconfirm openssh
+
+RUN ssh-keygen -A
+
+ADD ./ssh/ /root/.ssh/
+ADD --chown=web: ./ssh/ /home/web/.ssh/
+
+RUN sed -i -e 's/^UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config && \
+    sed -i -e 's/^#PermitUserEnvironment no/PermitUserEnvironment yes/g' /etc/ssh/sshd_config && \
+    sed -i -e 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+
+RUN cat /home/web/.ssh/id_rsa.pub >> /home/web/.ssh/authorized_keys
 
 ###########################################################################
 # YAY
@@ -241,9 +248,11 @@ RUN mkdir -p ${ASDF_DATA_DIR}
 
 ENV PATH="${ASDF_DIR}/bin:${PATH}"
 
+RUN echo "ASDF_DIR=${ASDF_DIR}" >> /home/web/.ssh/environment
+
 RUN echo "" | tee -a ${BASH_FILES} && \
     echo '# asdf' | tee -a ${BASH_FILES} && \
-    echo 'source ${ASDF_DIR}/asdf.sh' | tee -a ${BASH_FILES}
+    echo "source ${ASDF_DIR}/asdf.sh" | tee -a ${BASH_FILES}
 
 RUN echo "" | tee -a ${BASH_FILES} && \
     echo '# asdf-switcher' | tee -a ${BASH_FILES} && \
