@@ -248,7 +248,8 @@ RUN mkdir -p ${ASDF_DATA_DIR}
 
 ENV PATH="${ASDF_DIR}/bin:${PATH}"
 
-RUN echo "ASDF_DIR=${ASDF_DIR}" >> /home/web/.ssh/environment
+RUN echo "ASDF_DIR=${ASDF_DIR}" >> /home/web/.ssh/environment && \
+    echo "ASDF_DATA_DIR=${ASDF_DATA_DIR}" >> /home/web/.ssh/environment
 
 RUN echo "" | tee -a ${BASH_FILES} && \
     echo '# asdf' | tee -a ${BASH_FILES} && \
