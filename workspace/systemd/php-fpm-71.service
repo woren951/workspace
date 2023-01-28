@@ -1,0 +1,15 @@
+[Unit]
+Description=PHP-FPM-71 service
+After=asdf.service
+
+[Service]
+Type=forking
+PIDFile=/run/php-fpm-71.pid
+ExecStart=/home/.asdf/data/installs/php/7.1.33/sbin/php-fpm --nodaemonize
+PassEnvironment=PATH
+PassEnvironment=ASDF_DIR
+PassEnvironment=ASDF_DATA_DIR
+PassEnvironment=LOCALHTTPS_DATA
+
+[Install]
+WantedBy=nginx.service

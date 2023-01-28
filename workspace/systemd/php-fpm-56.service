@@ -1,0 +1,15 @@
+[Unit]
+Description=PHP-FPM-56 service
+After=asdf.service
+
+[Service]
+Type=forking
+PIDFile=/run/php-fpm-56.pid
+ExecStart=/home/.asdf/data/installs/php/5.6.40/sbin/php-fpm --nodaemonize
+PassEnvironment=PATH
+PassEnvironment=ASDF_DIR
+PassEnvironment=ASDF_DATA_DIR
+PassEnvironment=LOCALHTTPS_DATA
+
+[Install]
+WantedBy=nginx.service

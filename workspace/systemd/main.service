@@ -3,7 +3,14 @@ Description=Main service
 
 [Service]
 ExecStartPre=systemctl enable /etc/systemd/web/asdf.service
+ExecStartPre=systemctl enable /etc/systemd/web/php-fpm-56.service
+ExecStartPre=systemctl enable /etc/systemd/web/php-fpm-71.service
+ExecStartPre=systemctl enable /etc/systemd/web/php-fpm-74.service
+ExecStartPre=systemctl enable /etc/systemd/web/php-fpm-80.service
+ExecStartPre=systemctl enable /etc/systemd/web/php-fpm-81.service
+ExecStartPre=systemctl enable /etc/systemd/web/php-fpm-82.service
 ExecStartPre=systemctl enable /etc/systemd/web/nginx.service
+ExecStartPost=systemctl start main.service
 
 ExecStart=bash /opt/main.sh
 Restart=no
