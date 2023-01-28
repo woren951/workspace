@@ -1,7 +1,6 @@
 [Unit]
 Description=PHP-FPM-81 service
-After=network.target asdf.service php-fpm-81.socket
-Requires=php-fpm-81.socket
+After=asdf.service
 
 [Service]
 Type=forking
