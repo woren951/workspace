@@ -1,6 +1,7 @@
 [Unit]
 Description=PHP-FPM-81 service
-After=asdf.service
+After=network.target asdf.service php-fpm-81.socket
+Requires=php-fpm-81.socket
 
 [Service]
 Type=forking
@@ -12,4 +13,4 @@ PassEnvironment=ASDF_DATA_DIR
 PassEnvironment=LOCALHTTPS_DATA
 
 [Install]
-WantedBy=nginx.service sockets.target
+WantedBy=nginx.service
