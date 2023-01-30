@@ -1,15 +1,21 @@
 [Unit]
-Description=PHP-FPM-71 service
+Description=The PHP 71 FastCGI Process Manager
 After=asdf.service
 
 [Service]
-Type=forking
+Type=simple
 PIDFile=/run/php-fpm-71.pid
-ExecStart=/home/.asdf/data/installs/php/7.1.33/sbin/php-fpm --nodaemonize
+ExecStart=/home/.asdf/data/installs/php/7.1.33/sbin/php-fpm --nodaemonize --fpm-config /home/.asdf/data/installs/php/7.1.33/etc/php-fpm.conf
+ExecReload=/bin/kill -USR2 $MAINPID
 PassEnvironment=PATH
 PassEnvironment=ASDF_DIR
 PassEnvironment=ASDF_DATA_DIR
 PassEnvironment=LOCALHTTPS_DATA
+
+# Set up a new file system namespace and mounts private /tmp and /var/tmp directories
+# so this service cannot access the global directories and other processes cannot
+# access this service's directories.
+PrivateTmp=true
 
 [Install]
 WantedBy=nginx.service
