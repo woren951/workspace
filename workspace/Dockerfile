@@ -259,7 +259,8 @@ RUN echo "" | tee -a ${BASH_FILES} && \
     echo 'alias use-php-74="asdf global php 7.1.33"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-74="asdf global php 7.4.33"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-80="asdf global php 8.0.26"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-81="asdf global php 8.1.13"' | tee -a ${BASH_FILES}
+    echo 'alias use-php-81="asdf global php 8.1.13"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-php-81="asdf global php 8.2.1"' | tee -a ${BASH_FILES}
 
 ###########################################################################
 # NPM
