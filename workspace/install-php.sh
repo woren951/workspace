@@ -12,6 +12,9 @@ if [ ! -d "${1}/5.6.40" ]; then
     sed -i 's/user = nobody/user = web/' ${1}/5.6.40/etc/php-fpm.conf && \
     sed -i 's/group = nobody/group = web/' ${1}/5.6.40/etc/php-fpm.conf
 
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' ${1}/5.6.40/etc/php.ini && \
+    sed -i 's/post_max_size = 8M/post_max_size = 256M/' ${1}/5.6.40/etc/php.ini
+
     asdf global php 5.6.40 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
         printf "\n" | ${ASDF_DATA_DIR}/shims/pecl install imagick redis-2.2.8 && \
@@ -30,6 +33,9 @@ if [ ! -d "${1}/7.1.33" ]; then
     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9071/' ${1}/7.1.33/etc/php-fpm.d/www.conf && \
     sed -i 's/user = nobody/user = web/' ${1}/7.1.33/etc/php-fpm.d/www.conf && \
     sed -i 's/group = nobody/group = web/' ${1}/7.1.33/etc/php-fpm.d/www.conf
+
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' ${1}/7.1.33/etc/php.ini && \
+    sed -i 's/post_max_size = 8M/post_max_size = 256M/' ${1}/7.1.33/etc/php.ini
 
     asdf global php 7.1.33 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
@@ -51,6 +57,9 @@ if [ ! -d "${1}/7.4.33" ]; then
     sed -i 's/user = nobody/user = web/' ${1}/7.4.33/etc/php-fpm.d/www.conf && \
     sed -i 's/group = nobody/group = web/' ${1}/7.4.33/etc/php-fpm.d/www.conf
 
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' ${1}/7.4.33/etc/php.ini && \
+    sed -i 's/post_max_size = 8M/post_max_size = 256M/' ${1}/7.4.33/etc/php.ini
+
     asdf global php 7.4.33 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
         printf "\n" | ${ASDF_DATA_DIR}/shims/pecl install imagick redis && \
@@ -70,6 +79,9 @@ if [ ! -d "${1}/8.0.26" ]; then
     sed -i 's/user = nobody/user = web/' ${1}/8.0.26/etc/php-fpm.d/www.conf && \
     sed -i 's/group = nobody/group = web/' ${1}/8.0.26/etc/php-fpm.d/www.conf
 
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' ${1}/8.0.26/etc/php.ini && \
+    sed -i 's/post_max_size = 8M/post_max_size = 256M/' ${1}/8.0.26/etc/php.ini
+
     asdf global php 8.0.26 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
         printf "\n" | ${ASDF_DATA_DIR}/shims/pecl install imagick redis && \
@@ -86,6 +98,9 @@ if [ ! -d "${1}/8.1.13" ]; then
     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9081/' ${1}/8.1.13/etc/php-fpm.d/www.conf && \
     sed -i 's/user = nobody/user = web/' ${1}/8.1.13/etc/php-fpm.d/www.conf && \
     sed -i 's/group = nobody/group = web/' ${1}/8.1.13/etc/php-fpm.d/www.conf
+
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' ${1}/8.1.13/etc/php.ini && \
+    sed -i 's/post_max_size = 8M/post_max_size = 256M/' ${1}/8.1.13/etc/php.ini
 
     asdf global php 8.1.13 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
@@ -105,6 +120,9 @@ if [ ! -d "${1}/8.2.1" ]; then
     sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9082/' ${1}/8.2.1/etc/php-fpm.d/www.conf && \
     sed -i 's/user = nobody/user = web/' ${1}/8.2.1/etc/php-fpm.d/www.conf && \
     sed -i 's/group = nobody/group = web/' ${1}/8.2.1/etc/php-fpm.d/www.conf
+
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' ${1}/8.2.1/etc/php.ini && \
+    sed -i 's/post_max_size = 8M/post_max_size = 256M/' ${1}/8.2.1/etc/php.ini
 
     asdf global php 8.2.1 && \
         ${ASDF_DATA_DIR}/shims/pecl channel-update pecl.php.net && \
