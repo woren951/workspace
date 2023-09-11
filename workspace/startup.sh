@@ -15,7 +15,7 @@ if [ ! -d "${ASDF_DATA_DIR}/plugins/nodejs" ]; then
 fi
 
 bash /opt/install-nodejs.sh ${ASDF_DATA_DIR}/installs/nodejs
-asdf global nodejs 18.11.0
+asdf global nodejs 20.6.1
 
 # Install asdf php plugin and php versions if not installed
 if [ ! -d "${ASDF_DATA_DIR}/plugins/php" ]; then

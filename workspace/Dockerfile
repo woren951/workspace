@@ -251,9 +251,10 @@ RUN echo "" | tee -a ${BASH_FILES} && \
     echo '# asdf-nodejs' | tee -a ${BASH_FILES} && \
     echo 'alias use-nodejs-10="asdf global nodejs 10.24.1"' | tee -a ${BASH_FILES} && \
     echo 'alias use-nodejs-12="asdf global nodejs 12.22.12"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-nodejs-14="asdf global nodejs 14.20.1"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-nodejs-16="asdf global nodejs 16.18.0"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-nodejs-18="asdf global nodejs 18.11.0"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-nodejs-14="asdf global nodejs 14.21.3"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-nodejs-16="asdf global nodejs 16.20.2"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-nodejs-18="asdf global nodejs 18.17.1"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-nodejs-20="asdf global nodejs 20.6.1"' | tee -a ${BASH_FILES} && \
     echo '# asdf-php' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-56="asdf global php 5.6.40"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-74="asdf global php 7.1.33"' | tee -a ${BASH_FILES} && \
