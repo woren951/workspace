@@ -260,7 +260,7 @@ RUN echo "" | tee -a ${BASH_FILES} && \
     echo 'alias use-php-74="asdf global php 7.4.33"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-80="asdf global php 8.0.26"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-81="asdf global php 8.1.13"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-81="asdf global php 8.2.1"' | tee -a ${BASH_FILES}
+    echo 'alias use-php-81="asdf global php 8.2.10"' | tee -a ${BASH_FILES}
 
 ###########################################################################
 # NPM
@@ -300,7 +300,7 @@ RUN mkdir -p /home/web/.vscode-server/extensions && \
 
 USER root
 
-RUN pip install localhttps
+RUN pip install localhttps --break-system-packages
 
 ###########################################################################
 # STARTUP

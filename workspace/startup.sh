@@ -23,7 +23,7 @@ if [ ! -d "${ASDF_DATA_DIR}/plugins/php" ]; then
 fi
 
 bash /opt/install-php.sh ${ASDF_DATA_DIR}/installs/php
-asdf global php 8.1.13
+asdf global php 8.2.10
 
 # Asdf reshim
 asdf reshim
@@ -40,7 +40,7 @@ sudo ${ASDF_DATA_DIR}/installs/php/7.1.33/sbin/php-fpm
 sudo ${ASDF_DATA_DIR}/installs/php/7.4.33/sbin/php-fpm
 sudo ${ASDF_DATA_DIR}/installs/php/8.0.26/sbin/php-fpm
 sudo ${ASDF_DATA_DIR}/installs/php/8.1.13/sbin/php-fpm
-sudo ${ASDF_DATA_DIR}/installs/php/8.2.1/sbin/php-fpm
+sudo ${ASDF_DATA_DIR}/installs/php/8.2.10/sbin/php-fpm
 
 # Trust localhttps certificates
 sudo trust anchor --store ${LOCALHTTPS_DATA}/CertificationAuthorities/default.pem
