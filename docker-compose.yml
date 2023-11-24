@@ -9,17 +9,32 @@ networks:
         - subnet: 182.16.240.0/24
 
 volumes:
-  mysql:
-    driver: local
-  redis:
-    driver: local
-  phpmyadmin:
-    driver: local
-  elasticsearch:
-    driver: local
   vscode-extensions:
 
 services:
+### MariaDB ##############################################
+    mariadb-11:
+      build:
+        context: ./mariadb
+        args:
+          - http_proxy
+          - https_proxy
+          - no_proxy
+          - MARIADB_VERSION=11
+      volumes:
+        - ${DATA_PATH_HOST}/mariadb-11:/var/lib/mysql
+        - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+        # logs
+        - ./.logs/mariadb-11:/var/log/mysql
+      ports:
+        - "3306:3306"
+      environment:
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - TZ=${MYSQL_TIMEZONE}
+
 ### MySQL ################################################
     mysql-8:
       build:
@@ -47,7 +62,7 @@ services:
     phpmyadmin:
       build: ./phpmyadmin
       environment:
-        - PMA_HOSTS=mysql-8
+        - PMA_HOSTS=mysql-8,mariadb
         - MYSQL_USER=${PMA_USER}
         - MYSQL_PASSWORD=${PMA_PASSWORD}
         - MYSQL_ROOT_PASSWORD=${PMA_ROOT_PASSWORD}
@@ -231,6 +246,7 @@ services:
         # logs
         - ./.logs/nginx:/var/log/nginx
         - ./.logs/mysql-8:/var/log/mysql-8
+        - ./.logs/kibana-8/filebeat:/usr/share/kibana/filebeat/logs
       environment:
         ELASTICSEARCH_HOSTS: http://elasticsearch-8:9200
       depends_on:

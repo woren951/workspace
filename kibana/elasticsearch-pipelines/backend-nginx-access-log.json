@@ -5,7 +5,7 @@
             "grok": {
                 "field": "message",
                 "patterns": [
-                    "%{TIMESTAMP_ISO8601:nginx.access.time} (?:-|%{WORD:nginx.access.country_code}) %{IP:nginx.access.remote_ip} (?:-|%{WORD:nginx.cache.status}) %{NUMBER:http.response.time:float} %{NUMBER:http.response.status_code:long} (?:-|%{WORD:nginx.access.forwarded_proto}) %{DATA:http.request.host} %{DATA:http.request.method} %{DATA:http.request.uri} %{NUMBER:http.response.body_size:int} %{DATA:http.request.referrer} %{DATA:user_agent}$"
+                    "%{TIMESTAMP_ISO8601:nginx.access.time}\t(?:-|%{WORD:nginx.access.country_code})\t%{IP:nginx.access.remote_ip}\t(?:-|%{WORD:nginx.cache.status})\t%{NUMBER:http.response.time:float}\t%{NUMBER:http.response.status_code:long}\t(?:-|%{WORD:nginx.access.forwarded_proto})\t%{DATA:http.request.host}\t%{DATA:http.request.method}\t%{DATA:http.request.uri}\t%{NUMBER:http.response.body_size:int}\t%{DATA:http.request.referrer}\t%{DATA:user_agent}$"
                 ],
                 "ignore_missing": true
             }
