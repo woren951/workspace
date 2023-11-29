@@ -40,6 +40,8 @@ RUN chmod go-w $FILEBEAT_DIR/modules.d/mysql.yml
 ###########################################################################
 # MANUAL EXECUTION
 #
+# https://github.com/elastic/beats/blob/8.2/filebeat/module/nginx/access/ingest/pipeline.yml
+# https://github.com/elastic/elasticsearch/blob/main/libs/grok/src/main/resources/patterns/legacy/grok-patterns
 # cd ${FILEBEAT_DIR} && ./filebeat setup && ./filebeat -e
 ###########################################################################
 
