@@ -246,7 +246,6 @@ services:
         # logs
         - ./.logs/nginx:/var/log/nginx
         - ./.logs/mysql-8:/var/log/mysql-8
-        - ./.logs/kibana-8/filebeat:/usr/share/kibana/filebeat/logs
       environment:
         ELASTICSEARCH_HOSTS: http://elasticsearch-8:9200
       depends_on:
