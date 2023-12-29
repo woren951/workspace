@@ -33,7 +33,7 @@ services:
         - MYSQL_USER=${MYSQL_USER}
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - TZ=${MYSQL_TIMEZONE}
+        - TZ=${SERVICES_TIMEZONE}
 
 ### MySQL ################################################
     mysql-8:
@@ -47,7 +47,7 @@ services:
         - MYSQL_USER=${MYSQL_USER}
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - TZ=${MYSQL_TIMEZONE}
+        - TZ=${SERVICES_TIMEZONE}
       volumes:
         - ${DATA_PATH_HOST}/mysql-8:/var/lib/mysql
         - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -162,7 +162,7 @@ services:
       build:
         context: ./elasticsearch
         args:
-          - ELK_VERSION=8.2.0
+          - ELK_VERSION=8.11.3
       volumes:
         - '${DATA_PATH_HOST}/elasticsearch-8:/usr/share/elasticsearch/data'
       environment:
@@ -237,9 +237,10 @@ services:
       build:
         context: ./kibana
         args:
-          - ELK_VERSION=8.2.0
+          - ELK_VERSION=8.11.3
           - ELK_HOST=elasticsearch-8
           - KIBANA_HOST=kibana-8
+          - TZ=${SERVICES_TIMEZONE}
       ports:
         - "${KIBANA_HTTP_PORT}:5601"
       volumes:
@@ -258,6 +259,7 @@ services:
           - ELK_VERSION=7.5.1
           - ELK_HOST=elasticsearch-7
           - KIBANA_HOST=kibana-7
+          - TZ=${SERVICES_TIMEZONE}
       ports:
         - "${KIBANA_HTTP_PORT}:5601"
       volumes:
@@ -276,6 +278,7 @@ services:
           - ELK_VERSION=6.8.10
           - ELK_HOST=elasticsearch-6
           - KIBANA_HOST=kibana-6
+          - TZ=${SERVICES_TIMEZONE}
       ports:
         - "${KIBANA_HTTP_PORT}:5601"
       volumes:

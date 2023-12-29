@@ -1,9 +1,25 @@
 ARG ELK_VERSION
 FROM kibana:${ELK_VERSION}
 
+#####################################
+# Set Timezone
+#####################################
+
+USER root
+
+RUN apt-get update && apt-get install -y tzdata
+
+ARG TZ=UTC
+
+ENV TZ ${TZ}
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 ###########################################################################
 # FILEBEAT
 ###########################################################################
+
+USER kibana
 
 ARG ELK_VERSION ELK_HOST KIBANA_HOST
 
