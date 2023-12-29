@@ -107,6 +107,7 @@
                 "formats": [
                     "yyyy-MM-dd HH:mm:ss"
                 ],
+                "timezone": "Europe/Kyiv",
                 "on_failure": [
                     {
                         "append": {
