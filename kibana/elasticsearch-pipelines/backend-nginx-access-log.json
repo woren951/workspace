@@ -17,7 +17,7 @@
             "grok": {
                 "field": "event.original",
                 "patterns": [
-                    "%{TIMESTAMP_ISO8601:nginx.access.time}%{SPACE}(?:-|%{WORD})%{SPACE}(%{NGINX_HOST} )?\"?(?:%{NGINX_ADDRESS_LIST:nginx.access.remote_ip_list}|%{NOTSPACE:source.address})%{SPACE}(?:-|%{WORD:nginx.cache.status})%{SPACE}(?:-|%{NUMBER:http.response.time:double})%{SPACE}%{NUMBER:http.response.status_code:long}%{SPACE}(?:-|%{WORD})%{SPACE}(?:-|%{NGINX_NOTSEPARATOR:destination.domain})%{SPACE}%{WORD:http.request.method}%{SPACE}%{DATA:_tmp.url_orig}%{SPACE}%{NUMBER:http.response.body.bytes:long}%{SPACE}(-|%{DATA:http.request.referrer})%{SPACE}(-|%{DATA:user_agent.original})$"
+                    "%{TIMESTAMP_ISO8601:nginx.access.time}\\s(?:-|%{WORD})\\s(%{NGINX_HOST} )?\"?(?:%{NGINX_ADDRESS_LIST:nginx.access.remote_ip_list}|%{NOTSPACE:source.address})\\s(?:-|%{WORD:nginx.cache.status})\\s(?:-|%{NUMBER:http.response.time:double})\\s%{NUMBER:http.response.status_code:long}\\s(?:-|%{WORD})\\s(?:-|%{NGINX_NOTSEPARATOR:destination.domain})\\s%{WORD:http.request.method}\\s%{DATA:_tmp.url_orig}\\s%{NUMBER:http.response.body.bytes:long}\\s(-|%{DATA:http.request.referrer})\\s(-|%{DATA:user_agent.original})$"
                 ],
                 "pattern_definitions": {
                     "NGINX_NOTSEPARATOR": "[^/\t ,:]+",
