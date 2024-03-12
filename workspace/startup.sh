@@ -15,7 +15,7 @@ if [ ! -d "${ASDF_DATA_DIR}/plugins/nodejs" ]; then
 fi
 
 bash /opt/install-nodejs.sh ${ASDF_DATA_DIR}/installs/nodejs
-asdf global nodejs 20.6.1
+asdf global nodejs 20.10.0
 
 # Install asdf php plugin and php versions if not installed
 if [ ! -d "${ASDF_DATA_DIR}/plugins/php" ]; then
@@ -41,6 +41,7 @@ sudo ${ASDF_DATA_DIR}/installs/php/7.4.33/sbin/php-fpm
 sudo ${ASDF_DATA_DIR}/installs/php/8.0.26/sbin/php-fpm
 sudo ${ASDF_DATA_DIR}/installs/php/8.1.13/sbin/php-fpm
 sudo ${ASDF_DATA_DIR}/installs/php/8.2.10/sbin/php-fpm
+sudo ${ASDF_DATA_DIR}/installs/php/8.3.2/sbin/php-fpm
 
 # Trust localhttps certificates
 sudo trust anchor --store ${LOCALHTTPS_DATA}/CertificationAuthorities/default.pem

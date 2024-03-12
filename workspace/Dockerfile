@@ -253,15 +253,16 @@ RUN echo "" | tee -a ${BASH_FILES} && \
     echo 'alias use-nodejs-12="asdf global nodejs 12.22.12"' | tee -a ${BASH_FILES} && \
     echo 'alias use-nodejs-14="asdf global nodejs 14.21.3"' | tee -a ${BASH_FILES} && \
     echo 'alias use-nodejs-16="asdf global nodejs 16.20.2"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-nodejs-18="asdf global nodejs 18.17.1"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-nodejs-20="asdf global nodejs 20.6.1"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-nodejs-18="asdf global nodejs 18.19.0"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-nodejs-20="asdf global nodejs 20.10.0"' | tee -a ${BASH_FILES} && \
     echo '# asdf-php' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-56="asdf global php 5.6.40"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-74="asdf global php 7.1.33"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-74="asdf global php 7.4.33"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-80="asdf global php 8.0.26"' | tee -a ${BASH_FILES} && \
     echo 'alias use-php-81="asdf global php 8.1.13"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-81="asdf global php 8.2.10"' | tee -a ${BASH_FILES}
+    echo 'alias use-php-82="asdf global php 8.2.10"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-php-83="asdf global php 8.3.2"' | tee -a ${BASH_FILES}
 
 ###########################################################################
 # NPM
@@ -283,8 +284,6 @@ RUN pacman -S --noconfirm nginx
 RUN touch /var/log/messages
 
 COPY nginx/nginx.conf /etc/nginx/
-
-COPY nginx/logrotate /etc/logrotate.d/
 
 ###########################################################################
 # VSCODE-SERVER

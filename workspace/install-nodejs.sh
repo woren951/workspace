@@ -20,12 +20,12 @@ if [ ! -d "${1}/16.20.2" ]; then
     asdf install nodejs 16.20.2
 fi
 
-# installing node-18.17.1 if not installed
-if [ ! -d "${1}/18.17.1" ]; then
-    asdf install nodejs 18.17.1
+# installing node-18.19.0 if not installed
+if [ ! -d "${1}/18.19.0" ]; then
+    asdf install nodejs 18.19.0
 fi
 
-# installing node-20.6.1 if not installed
-if [ ! -d "${1}/20.6.1" ]; then
-    asdf install nodejs 20.6.1
+# installing node-20.10.0 if not installed
+if [ ! -d "${1}/20.10.0" ]; then
+    asdf install nodejs 20.10.0
 fi
