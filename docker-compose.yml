@@ -284,6 +284,45 @@ services:
       depends_on:
         - elasticsearch-6
 
+### OpenSearch ########################################
+    opensearch:
+      build:
+        context: ./opensearch
+      volumes:
+        - '${DATA_PATH_HOST}/opensearch:/usr/share/opensearch/data'
+      environment:
+        - discovery.type=single-node
+        - cluster.name=web-cluster
+        - bootstrap.memory_lock=true
+        - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+        - OPENSEARCH_INITIAL_ADMIN_PASSWORD="adminadminadminadmin"
+        - DISABLE_SECURITY_PLUGIN=true
+      ulimits:
+        memlock:
+          soft: -1
+          hard: -1
+        nofile:
+          soft: 65536
+          hard: 65536
+      ports:
+        - "${ELASTICSEARCH_HOST_HTTP_PORT}:9200"
+        - "${ELASTICSEARCH_HOST_TRANSPORT_PORT}:9300"
+
+### Opensearch dashboards ##############################################
+    opensearch-dashboards:
+      build:
+        context: ./opensearch-dashboards
+      ports:
+        - "${KIBANA_HTTP_PORT}:5601"
+      volumes:
+        # logs
+        - ./.logs/nginx:/var/log/nginx
+        - ./.logs/mysql-8:/var/log/mysql-8
+      environment:
+        OPENSEARCH_HOSTS: '["http://opensearch:9200"]'
+      depends_on:
+        - opensearch
+
 ### Minio ################################################
     minio:
       build:
