@@ -1,5 +1,3 @@
-version: '3.5'
-
 networks:
   default:
     driver: bridge
@@ -164,7 +162,7 @@ services:
         - cluster.name=web-cluster
         - bootstrap.memory_lock=true
         - xpack.security.enabled=false
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
         - cluster.initial_master_nodes=web-node
       ulimits:
         memlock:
@@ -189,7 +187,7 @@ services:
         - cluster.name=web-cluster
         - bootstrap.memory_lock=true
         - xpack.security.enabled=false
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
         - cluster.initial_master_nodes=web-node
       ulimits:
         memlock:
@@ -214,7 +212,7 @@ services:
         - cluster.name=web-cluster
         - bootstrap.memory_lock=true
         - xpack.security.enabled=false
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
       ulimits:
         memlock:
           soft: -1
@@ -322,6 +320,36 @@ services:
         - ./.logs/nginx:/var/log/nginx
       extra_hosts:
         - "node-webserver.test:0.0.0.0"
+      ports:
+        - "80:80"
+        - "443:443"
+        - "2222:22"
+        - "3010:3010"
+        - "8080:8080"
+
+### Workspace V2 ##############################################
+    workspace-v2:
+      build:
+        context: ./workspace-v2
+      tty: true
+      privileged: true
+      volumes:
+        - ${APP_CODE_PATH_HOST}:/var/www${APP_CODE_CONTAINER_FLAG}
+        # nginx
+        - ./workspace-v2/sites-available:/etc/nginx/sites-available
+        - ./workspace-v2/certs:/etc/nginx/certs
+        # bash history
+        - .bash-history/root:/root/.bash-history
+        - .bash-history/web:/home/web/.bash-history
+        # logs
+        - .logs/nginx:/var/log/nginx
+        - .logs/php-fpm:/var/log/php-fpm
+      tmpfs:
+        - /run
+        - /run/lock
+      networks:
+        default:
+          ipv4_address: 182.16.240.24
       ports:
         - "80:80"
         - "443:443"

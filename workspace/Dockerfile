@@ -156,6 +156,20 @@ RUN cd /home/web && git clone https://aur.archlinux.org/yay.git && \
     cd yay && makepkg -sri --needed --noconfirm && cd - && \
     rm -rf .cache yay
 
+# ###########################################################################
+# # GCC
+# ###########################################################################
+
+# USER root
+
+# RUN yay -S --noconfirm gcc13 gcc13-libs
+
+# RUN mv /usr/bin/gcc /usr/bin/gcc-14.1.1 && \
+#     mv /usr/bin/g++ /usr/bin/g++-14.1.1
+
+# RUN ln -s /usr/bin/gcc-13 /usr/bin/gcc && \
+#     ln -s /usr/bin/g++-13 /usr/bin/g++
+
 ###########################################################################
 # BASH
 ###########################################################################
@@ -256,13 +270,13 @@ RUN echo "" | tee -a ${BASH_FILES} && \
     echo 'alias use-nodejs-18="asdf global nodejs 18.19.0"' | tee -a ${BASH_FILES} && \
     echo 'alias use-nodejs-20="asdf global nodejs 20.10.0"' | tee -a ${BASH_FILES} && \
     echo '# asdf-php' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-56="asdf global php 5.6.40"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-74="asdf global php 7.1.33"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-74="asdf global php 7.4.33"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-80="asdf global php 8.0.26"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-81="asdf global php 8.1.13"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-82="asdf global php 8.2.10"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-83="asdf global php 8.3.2"' | tee -a ${BASH_FILES}
+    # echo 'alias use-php-56="asdf global php 5.6.40"' | tee -a ${BASH_FILES} && \
+    # echo 'alias use-php-74="asdf global php 7.1.33"' | tee -a ${BASH_FILES} && \
+    # echo 'alias use-php-74="asdf global php 7.4.33"' | tee -a ${BASH_FILES} && \
+    # echo 'alias use-php-80="asdf global php 8.0.26"' | tee -a ${BASH_FILES} && \
+    # echo 'alias use-php-81="asdf global php 8.1.29"' | tee -a ${BASH_FILES} && \
+    # echo 'alias use-php-82="asdf global php 8.2.21"' | tee -a ${BASH_FILES} && \
+    echo 'alias use-php-83="asdf global php 8.3.9"' | tee -a ${BASH_FILES}
 
 ###########################################################################
 # NPM
@@ -294,13 +308,32 @@ USER root
 RUN mkdir -p /home/web/.vscode-server/extensions && \
     chown -R web /home/web/.vscode-server
 
+# ###########################################################################
+# # LOCALHTTPS
+# ###########################################################################
+
+# USER root
+
+# RUN pip install localhttps --break-system-packages
+
 ###########################################################################
-# LOCALHTTPS
+# SPC
 ###########################################################################
 
 USER root
 
-RUN pip install localhttps --break-system-packages
+RUN curl -fsSL -o spc https://dl.static-php.dev/static-php-cli/spc-bin/nightly/spc-linux-x86_64 && \
+    chmod +x ./spc && \
+    mv ./spc /bin/spc && \
+    spc doctor --auto-fix
+
+RUN mkdir /opt/php && cd /opt/php && \
+    spc download --with-php=8.3 --for-extensions "apcu,bcmath,calendar,ctype,curl,dba,dom,exif,fileinfo,filter,gd,gettext,iconv,intl,mbregex,mbstring,mysqli,mysqlnd,opcache,openssl,pcntl,pdo,pdo_mysql,pdo_sqlite,phar,posix,readline,redis,session,simplexml,sockets,sodium,sqlite3,tokenizer,xml,xmlreader,xmlwriter,xsl,zip,zlib" --prefer-pre-built --debug && \
+    spc build --build-cli --build-fpm "apcu,bcmath,calendar,ctype,curl,dba,dom,exif,fileinfo,filter,gd,gettext,iconv,intl,mbregex,mbstring,mysqli,mysqlnd,opcache,openssl,pcntl,pdo,pdo_mysql,pdo_sqlite,phar,posix,readline,redis,session,simplexml,sockets,sodium,sqlite3,tokenizer,xml,xmlreader,xmlwriter,xsl,zip,zlib" --debug -I "memory_limit=256M"
+
+ADD ./php-fpm.config /etc/php-fpm.conf
+
+ENV PATH="/opt/php/buildroot/bin:${PATH}"
 
 ###########################################################################
 # STARTUP
