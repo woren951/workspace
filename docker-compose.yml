@@ -335,6 +335,7 @@ services:
       privileged: true
       volumes:
         - ${APP_CODE_PATH_HOST}:/var/www${APP_CODE_CONTAINER_FLAG}
+        - .vscode-server:/home/web/.vscode-server
         # nginx
         - ./workspace-v2/sites-available:/etc/nginx/sites-available
         - ./workspace-v2/certs:/etc/nginx/certs
