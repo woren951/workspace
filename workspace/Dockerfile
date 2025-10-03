@@ -204,33 +204,47 @@ USER root
 
 RUN dnf module enable php:remi-8.4 --assumeyes
 
-RUN dnf install php php-bcmath php-cli php-common php-curl php-fpm php-gd php-gettext php-intl php-json php-mbstring php-mysqlnd php-opcache php-pdo php-pdo_mysql php-pgsql php-soap php-xml php-zip --assumeyes
-
-RUN sed -i 's/user = apache/user = web/' /etc/php-fpm.d/www.conf && \
+RUN dnf install -y \
+    php php-bcmath php-cli php-common php-curl php-fpm php-gd php-gettext \
+    php-redis php-intl php-json php-mbstring php-mysqlnd php-opcache php-pdo \
+    php-pdo_mysql php-pgsql php-soap php-xml php-zip && \
+    sed -i 's/user = apache/user = web/' /etc/php-fpm.d/www.conf && \
     sed -i 's/group = apache/group = web/' /etc/php-fpm.d/www.conf && \
     sed -i 's/listen.acl_users = apache,nginx/listen.acl_users = web,nginx/' /etc/php-fpm.d/www.conf && \
     sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' /etc/php.ini && \
     sed -i 's/post_max_size = 8M/post_max_size = 256M/' /etc/php.ini
 
-RUN dnf install php83 php83-php-bcmath php83-php-cli php83-php-common php83-php-curl php83-php-fpm php83-php-gd php83-php-gettext php83-php-intl php83-php-json php83-php-mbstring php83-php-mysqlnd php83-php-opcache php83-php-pdo php83-php-pdo_mysql php83-php-pgsql php83-php-soap php83-php-xml php83-php-zip --assumeyes
-
-RUN sed -i 's/user = apache/user = web/' /etc/opt/remi/php83/php-fpm.d/www.conf && \
+RUN dnf install -y \
+    php83 php83-php-bcmath php83-php-cli php83-php-common php83-php-curl \
+    php83-php-fpm php83-php-gd php83-php-gettext php83-php-redis php83-php-intl \
+    php83-php-json php83-php-mbstring php83-php-mysqlnd php83-php-opcache \
+    php83-php-pdo php83-php-pdo_mysql php83-php-pgsql php83-php-soap \
+    php83-php-xml php83-php-zip && \
+    sed -i 's/user = apache/user = web/' /etc/opt/remi/php83/php-fpm.d/www.conf && \
     sed -i 's/group = apache/group = web/' /etc/opt/remi/php83/php-fpm.d/www.conf && \
     sed -i 's/listen.acl_users = apache/listen.acl_users = web,nginx/' /etc/opt/remi/php83/php-fpm.d/www.conf && \
     sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' /etc/opt/remi/php83/php.ini && \
     sed -i 's/post_max_size = 8M/post_max_size = 256M/' /etc/opt/remi/php83/php.ini
 
-RUN dnf install php82 php82-php-bcmath php82-php-cli php82-php-common php82-php-curl php82-php-fpm php82-php-gd php82-php-gettext php82-php-intl php82-php-json php82-php-mbstring php82-php-mysqlnd php82-php-opcache php82-php-pdo php82-php-pdo_mysql php82-php-pgsql php82-php-soap php82-php-xml php82-php-zip --assumeyes
-
-RUN sed -i 's/user = apache/user = web/' /etc/opt/remi/php82/php-fpm.d/www.conf && \
+RUN dnf install -y \
+    php82 php82-php-bcmath php82-php-cli php82-php-common php82-php-curl \
+    php82-php-fpm php82-php-gd php82-php-gettext php82-php-redis php82-php-intl \
+    php82-php-json php82-php-mbstring php82-php-mysqlnd php82-php-opcache \
+    php82-php-pdo php82-php-pdo_mysql php82-php-pgsql php82-php-soap \
+    php82-php-xml php82-php-zip && \
+    sed -i 's/user = apache/user = web/' /etc/opt/remi/php82/php-fpm.d/www.conf && \
     sed -i 's/group = apache/group = web/' /etc/opt/remi/php82/php-fpm.d/www.conf && \
     sed -i 's/listen.acl_users = apache/listen.acl_users = web,nginx/' /etc/opt/remi/php82/php-fpm.d/www.conf && \
     sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' /etc/opt/remi/php82/php.ini && \
     sed -i 's/post_max_size = 8M/post_max_size = 256M/' /etc/opt/remi/php82/php.ini
 
-RUN dnf install php74 php74-php-bcmath php74-php-cli php74-php-common php74-php-curl php74-php-fpm php74-php-gd php74-php-gettext php74-php-intl php74-php-json php74-php-mbstring php74-php-mysqlnd php74-php-opcache php74-php-pdo php74-php-pdo_mysql php74-php-pgsql php74-php-soap php74-php-xml php74-php-zip --assumeyes
-
-RUN sed -i 's/user = apache/user = web/' /etc/opt/remi/php74/php-fpm.d/www.conf && \
+RUN dnf install -y \
+    php74 php74-php-bcmath php74-php-cli php74-php-common php74-php-curl \
+    php74-php-fpm php74-php-gd php74-php-gettext php74-php-redis php74-php-intl \
+    php74-php-json php74-php-mbstring php74-php-mysqlnd php74-php-opcache \
+    php74-php-pdo php74-php-pdo_mysql php74-php-pgsql php74-php-soap \
+    php74-php-xml php74-php-zip && \
+    sed -i 's/user = apache/user = web/' /etc/opt/remi/php74/php-fpm.d/www.conf && \
     sed -i 's/group = apache/group = web/' /etc/opt/remi/php74/php-fpm.d/www.conf && \
     sed -i 's/listen.acl_users = apache/listen.acl_users = web,nginx/' /etc/opt/remi/php74/php-fpm.d/www.conf && \
     sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' /etc/opt/remi/php74/php.ini && \
