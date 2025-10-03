@@ -38,7 +38,7 @@ services:
       build:
         context: ./mysql
         args:
-          - MYSQL_VERSION=8.0.28
+          - MYSQL_VERSION=8.0.43
       command: --max_allowed_packet=32505856
       environment:
         - MYSQL_DATABASE=${MYSQL_DATABASE}
@@ -154,7 +154,7 @@ services:
       build:
         context: ./elasticsearch
         args:
-          - ELK_VERSION=8.11.3
+          - ELK_VERSION=8.19.4
       volumes:
         - '${DATA_PATH_HOST}/elasticsearch-8:/usr/share/elasticsearch/data'
       environment:
@@ -179,7 +179,7 @@ services:
       build:
         context: ./elasticsearch
         args:
-          - ELK_VERSION=7.5.1
+          - ELK_VERSION=7.17.28
       volumes:
         - '${DATA_PATH_HOST}/elasticsearch-7:/usr/share/elasticsearch/data'
       environment:
@@ -204,7 +204,7 @@ services:
       build:
         context: ./elasticsearch
         args:
-          - ELK_VERSION=6.8.10
+          - ELK_VERSION=6.8.23
       volumes:
         - '${DATA_PATH_HOST}/elasticsearch-6:/usr/share/elasticsearch/data'
       environment:
@@ -229,7 +229,7 @@ services:
       build:
         context: ./kibana
         args:
-          - ELK_VERSION=8.11.3
+          - ELK_VERSION=8.19.4
           - ELK_HOST=elasticsearch-8
           - KIBANA_HOST=kibana-8
           - TZ=${SERVICES_TIMEZONE}
@@ -248,7 +248,7 @@ services:
       build:
         context: ./kibana
         args:
-          - ELK_VERSION=7.5.1
+          - ELK_VERSION=7.17.28
           - ELK_HOST=elasticsearch-7
           - KIBANA_HOST=kibana-7
           - TZ=${SERVICES_TIMEZONE}
@@ -267,7 +267,7 @@ services:
       build:
         context: ./kibana
         args:
-          - ELK_VERSION=6.8.10
+          - ELK_VERSION=6.8.23
           - ELK_HOST=elasticsearch-6
           - KIBANA_HOST=kibana-6
           - TZ=${SERVICES_TIMEZONE}
@@ -297,35 +297,35 @@ services:
         - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
 
 ### Workspace ##############################################
-    workspace:
-      build:
-        context: ./workspace
-      tty: true
-      environment:
-        - LOCALHTTPS_DATA=${LOCALHTTPS_DATA}
-      volumes:
-        - ${APP_CODE_PATH_HOST}:/var/www${APP_CODE_CONTAINER_FLAG}
-        - ${HOME}/.ssh:/home/web/.ssh
-        - ${HOME}/.ssh:/root/.ssh
-        - ${LOCALHTTPS_DATA}:${LOCALHTTPS_DATA}
-        - ./workspace/sites-available:/etc/nginx/sites-available
-        - ./workspace/web-shared:/home/web/.web-shared
-        - .asdf/data:/home/.asdf/data
-        - .asdf/vm:/home/.asdf/vm
-        - .bash-history/root:/root/.bash-history
-        - .bash-history/web:/home/web/.bash-history
-        # vscode-server
-        - vscode-extensions:/home/web/.vscode-server/extensions
-        # logs
-        - ./.logs/nginx:/var/log/nginx
-      extra_hosts:
-        - "node-webserver.test:0.0.0.0"
-      ports:
-        - "80:80"
-        - "443:443"
-        - "2222:22"
-        - "3010:3010"
-        - "8080:8080"
+    # workspace:
+    #   build:
+    #     context: ./workspace
+    #   tty: true
+    #   environment:
+    #     - LOCALHTTPS_DATA=${LOCALHTTPS_DATA}
+    #   volumes:
+    #     - ${APP_CODE_PATH_HOST}:/var/www${APP_CODE_CONTAINER_FLAG}
+    #     - ${HOME}/.ssh:/home/web/.ssh
+    #     - ${HOME}/.ssh:/root/.ssh
+    #     - ${LOCALHTTPS_DATA}:${LOCALHTTPS_DATA}
+    #     - ./workspace/sites-available:/etc/nginx/sites-available
+    #     - ./workspace/web-shared:/home/web/.web-shared
+    #     - .asdf/data:/home/.asdf/data
+    #     - .asdf/vm:/home/.asdf/vm
+    #     - .bash-history/root:/root/.bash-history
+    #     - .bash-history/web:/home/web/.bash-history
+    #     # vscode-server
+    #     - vscode-extensions:/home/web/.vscode-server/extensions
+    #     # logs
+    #     - ./.logs/nginx:/var/log/nginx
+    #   extra_hosts:
+    #     - "node-webserver.test:0.0.0.0"
+    #   ports:
+    #     - "80:80"
+    #     - "443:443"
+    #     - "2222:22"
+    #     - "3010:3010"
+    #     - "8080:8080"
 
 ### Workspace V2 ##############################################
     workspace-v2:

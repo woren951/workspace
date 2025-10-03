@@ -104,8 +104,10 @@ RUN wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.
 
 RUN sh install.sh
 
+RUN git clone https://github.com/jessarcher/zsh-artisan.git ~/.oh-my-zsh/custom/plugins/artisan
+
 RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
-    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel5 npm yarn history-substring-search)/' ~/.zshrc && \
+    sed -i -E 's/plugins=(.+)/plugins=(git artisan composer npm yarn history-substring-search)/' ~/.zshrc && \
     echo "" | tee -a ~/.zshrc && \
     echo "# history plugin configs" | tee -a ~/.zshrc && \
     echo 'export HISTFILE=/root/.bash-history/.zsh' | tee -a ~/.zshrc && \
@@ -117,8 +119,10 @@ USER web
 
 RUN sh install.sh
 
+RUN git clone https://github.com/jessarcher/zsh-artisan.git ~/.oh-my-zsh/custom/plugins/artisan
+
 RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
-    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel5 npm yarn history-substring-search)/' ~/.zshrc && \
+    sed -i -E 's/plugins=(.+)/plugins=(git artisan composer npm yarn history-substring-search)/' ~/.zshrc && \
     echo "" | tee -a ~/.zshrc && \
     echo "# history plugin configs" | tee -a ~/.zshrc && \
     echo 'export HISTFILE=/home/web/.bash-history/.zsh' | tee -a ~/.zshrc && \
@@ -156,6 +160,7 @@ RUN dnf install openssh-server --assumeyes
 RUN ssh-keygen -A
 
 ADD ./ssh/ /root/.ssh/
+
 ADD --chown=web: ./ssh/ /home/web/.ssh/
 
 RUN sed -i -e 's/^UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config && \
