@@ -13,18 +13,18 @@ LABEL maintainer="Oleh Kotiai <woren951@gmail.com>"
 ###########################################################################
 USER root
 
-RUN microdnf install dnf --assumeyes
+RUN microdnf install dnf -y
 
-RUN dnf upgrade --assumeyes
+RUN dnf upgrade -y
 
-RUN dnf update --assumeyes
+RUN dnf update -y
 
 ###########################################################################
 # Install sudo
 ###########################################################################
 USER root
 
-RUN dnf install sudo --assumeyes
+RUN dnf install sudo -y
 
 ###########################################################################
 # Setup timezone
@@ -35,17 +35,17 @@ ENV TZ=Europe/Kyiv
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone && \
-    dnf install -y tzdata
+    dnf install tzdata -y
 
 ###########################################################################
 # Create new user
 ###########################################################################
 USER root
 
-RUN groupadd --gid 1000 web
+RUN groupadd -g 1000 web
 
-RUN useradd --system --create-home --uid 1000 --gid 1000 --shell /bin/bash web && \
-    usermod --password "*" web --shell /bin/bash && \
+RUN useradd --system --create-home -u 1000 -g 1000 -s /bin/bash web && \
+    usermod --password "*" web -s /bin/bash && \
     echo "web ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers
 
 ###########################################################################
@@ -53,21 +53,21 @@ RUN useradd --system --create-home --uid 1000 --gid 1000 --shell /bin/bash web &
 ###########################################################################
 USER root
 
-RUN dnf install findutils ncurses --assumeyes
+RUN dnf install findutils ncurses -y
 
 ###########################################################################
 # Update tools
 ###########################################################################
 USER root
 
-RUN dnf install tar wget vi --assumeyes
+RUN dnf install tar wget vi -y
 
 ###########################################################################
 # Installing systemd
 ###########################################################################
 USER root
 
-RUN dnf install systemd --assumeyes
+RUN dnf install systemd -y
 
 RUN mkdir -p /etc/systemd/system/multi-user.target.wants
 
@@ -76,7 +76,7 @@ RUN mkdir -p /etc/systemd/system/multi-user.target.wants
 ###########################################################################
 USER root
 
-RUN dnf install glibc-langpack-uk --assumeyes
+RUN dnf install glibc-langpack-uk -y
 
 ###########################################################################
 # Update tools
@@ -84,10 +84,9 @@ RUN dnf install glibc-langpack-uk --assumeyes
 USER root
 
 ARG GIT_GLOBAL_USER_NAME
-
 ARG GIT_GLOBAL_USER_EMAIL
 
-RUN dnf install git --assumeyes
+RUN dnf install git -y
 
 RUN git config --global user.name "${GIT_GLOBAL_USER_NAME}" && \
     git config --global user.email "${GIT_GLOBAL_USER_EMAIL}"
@@ -101,18 +100,18 @@ RUN mkdir -p /root/.bash-history && \
     mkdir -p /home/web/.bash-history && \
     chown -R web /home/web/.bash-history
 
-RUN echo 'export HISTFILE=/root/.bash-history/.bash' | tee -a ~/.bashrc
+RUN echo 'export HISTFILE=/root/.bash-history/.bash' >> ~/.bashrc
 
 USER web
 
-RUN echo 'export HISTFILE=/home/web/.bash-history/.bash' | tee -a ~/.bashrc
+RUN echo 'export HISTFILE=/home/web/.bash-history/.bash' >> ~/.bashrc
 
 ###########################################################################
 # Setup zsh
 ###########################################################################
 USER root
 
-RUN dnf install zsh --assumeyes
+RUN dnf install zsh -y
 
 RUN wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
 
@@ -122,12 +121,12 @@ RUN git clone https://github.com/jessarcher/zsh-artisan.git ~/.oh-my-zsh/custom/
 
 RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
     sed -i -E 's/plugins=(.+)/plugins=(git artisan composer npm yarn history-substring-search)/' ~/.zshrc && \
-    echo "" | tee -a ~/.zshrc && \
-    echo "# history plugin configs" | tee -a ~/.zshrc && \
-    echo 'export HISTFILE=/root/.bash-history/.zsh' | tee -a ~/.zshrc && \
-    echo 'setopt HIST_IGNORE_ALL_DUPS' | tee -a ~/.zshrc && \
-    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="fg=green,bold"' | tee -a ~/.zshrc && \
-    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red,bold"' | tee -a ~/.zshrc
+    echo "" >> ~/.zshrc && \
+    echo "# history plugin configs" >> ~/.zshrc && \
+    echo 'export HISTFILE=/root/.bash-history/.zsh' >> ~/.zshrc && \
+    echo 'setopt HIST_IGNORE_ALL_DUPS' >> ~/.zshrc && \
+    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="fg=green,bold"' >> ~/.zshrc && \
+    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red,bold"' >> ~/.zshrc
 
 USER web
 
@@ -137,19 +136,19 @@ RUN git clone https://github.com/jessarcher/zsh-artisan.git ~/.oh-my-zsh/custom/
 
 RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
     sed -i -E 's/plugins=(.+)/plugins=(git artisan composer npm yarn history-substring-search)/' ~/.zshrc && \
-    echo "" | tee -a ~/.zshrc && \
-    echo "# history plugin configs" | tee -a ~/.zshrc && \
-    echo 'export HISTFILE=/home/web/.bash-history/.zsh' | tee -a ~/.zshrc && \
-    echo 'setopt HIST_IGNORE_ALL_DUPS' | tee -a ~/.zshrc && \
-    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="fg=green,bold"' | tee -a ~/.zshrc && \
-    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red,bold"' | tee -a ~/.zshrc
+    echo "" >> ~/.zshrc && \
+    echo "# history plugin configs" >> ~/.zshrc && \
+    echo 'export HISTFILE=/home/web/.bash-history/.zsh' >> ~/.zshrc && \
+    echo 'setopt HIST_IGNORE_ALL_DUPS' >> ~/.zshrc && \
+    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="fg=green,bold"' >> ~/.zshrc && \
+    echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red,bold"' >> ~/.zshrc
 
 ###########################################################################
 # Local https
 ###########################################################################
 USER root
 
-RUN dnf install nss-tools --assumeyes
+RUN dnf install nss-tools -y
 
 RUN curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64" && \
     chmod +x mkcert-v*-linux-amd64 && \
@@ -160,7 +159,7 @@ RUN curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64" && \
 ###########################################################################
 USER root
 
-RUN dnf install https://rpms.remirepo.net/enterprise/remi-release-9.rpm --assumeyes
+RUN dnf install https://rpms.remirepo.net/enterprise/remi-release-9.rpm -y
 
 RUN dnf config-manager --set-enabled remi
 
@@ -169,7 +168,7 @@ RUN dnf config-manager --set-enabled remi
 ###########################################################################
 USER root
 
-RUN dnf install openssh-server --assumeyes
+RUN dnf install openssh-server -y
 
 RUN ssh-keygen -A
 
@@ -191,7 +190,7 @@ RUN systemctl enable sshd.service
 ###########################################################################
 USER root
 
-RUN dnf install nginx --assumeyes
+RUN dnf install nginx -y
 
 COPY nginx/nginx.conf /etc/nginx/
 
@@ -202,7 +201,7 @@ RUN systemctl enable nginx.service
 ###########################################################################
 USER root
 
-RUN dnf module enable php:remi-8.4 --assumeyes
+RUN dnf module enable php:remi-8.4 -y
 
 RUN dnf install -y \
     php php-bcmath php-cli php-common php-curl php-fpm php-gd php-gettext \
