@@ -60,7 +60,7 @@ RUN dnf install findutils ncurses --assumeyes
 ###########################################################################
 USER root
 
-RUN dnf install tar wget git vi --assumeyes
+RUN dnf install tar wget vi --assumeyes
 
 ###########################################################################
 # Installing systemd
@@ -77,6 +77,20 @@ RUN mkdir -p /etc/systemd/system/multi-user.target.wants
 USER root
 
 RUN dnf install glibc-langpack-uk --assumeyes
+
+###########################################################################
+# Update tools
+###########################################################################
+USER root
+
+ARG GIT_GLOBAL_USER_NAME
+
+ARG GIT_GLOBAL_USER_EMAIL
+
+RUN dnf install git --assumeyes
+
+RUN git config --global user.name "${GIT_GLOBAL_USER_NAME}" && \
+    git config --global user.email "${GIT_GLOBAL_USER_EMAIL}"
 
 ###########################################################################
 # Setup bash

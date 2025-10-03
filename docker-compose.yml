@@ -331,6 +331,9 @@ services:
     workspace-v2:
       build:
         context: ./workspace-v2
+        args:
+          - GIT_GLOBAL_USER_NAME=${GIT_GLOBAL_USER_NAME}
+          - GIT_GLOBAL_USER_EMAIL=${GIT_GLOBAL_USER_EMAIL}
       tty: true
       privileged: true
       volumes:
@@ -350,7 +353,7 @@ services:
         - /run/lock
       networks:
         default:
-          ipv4_address: 182.16.240.24
+          ipv4_address: 182.16.240.24 # for ssh
       ports:
         - "80:80"
         - "443:443"
