@@ -4,176 +4,97 @@
 #--------------------------------------------------------------------------
 ###########################################################################
 
-FROM archlinux:base
+FROM rockylinux:9.3-minimal
 
 LABEL maintainer="Oleh Kotiai <woren951@gmail.com>"
 
-# Start as root
+###########################################################################
+# Update core and dependencies
+###########################################################################
 USER root
 
-# Generate packman key
-RUN pacman-key --init
+RUN microdnf install dnf --assumeyes
 
-RUN pacman -Sy archlinux-keyring --noconfirm && pacman -Su --noconfirm
+RUN dnf upgrade --assumeyes
 
-# Update packman database and dependencies
-RUN pacman -Syyu --noconfirm
-
-RUN pacman -S --needed --noconfirm base-devel
+RUN dnf update --assumeyes
 
 ###########################################################################
-# LOCALES
+# Install sudo
 ###########################################################################
-
 USER root
 
-COPY locales /usr/share/i18n/locales
-
-RUN echo 'en_GB.UTF-8 UTF-8' >> /etc/locale.gen && \
-    echo 'de_DE.UTF-8 UTF-8' >> /etc/locale.gen && \
-    echo 'fr_FR.UTF-8 UTF-8' >> /etc/locale.gen && \
-    echo 'ru_RU.UTF-8 UTF-8' >> /etc/locale.gen && \
-    echo 'uk_UA.UTF-8 UTF-8' >> /etc/locale.gen
-
-RUN locale-gen
+RUN dnf install sudo --assumeyes
 
 ###########################################################################
-# TIMEZONE
+# Setup timezone
 ###########################################################################
-
-RUN ln -snf /usr/share/zoneinfo/Europe/Kiev /etc/localtime && \
-    echo Europe/Kiev > /etc/timezone
-
-###########################################################################
-# VI
-###########################################################################
-
 USER root
 
-RUN pacman -S --noconfirm vi
+ENV TZ=Europe/Kyiv
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone && \
+    dnf install -y tzdata
 
 ###########################################################################
-# WGET
+# Create new user
 ###########################################################################
-
 USER root
 
-RUN pacman -S --noconfirm wget
+RUN groupadd --gid 1000 web
+
+RUN useradd --system --create-home --uid 1000 --gid 1000 --shell /bin/bash web && \
+    usermod --password "*" web --shell /bin/bash && \
+    echo "web ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers
 
 ###########################################################################
-# ZIP
+# Update system utils
 ###########################################################################
-
 USER root
 
-RUN pacman -S --noconfirm gzip unzip
+RUN dnf install findutils ncurses --assumeyes
 
 ###########################################################################
-# GIT
+# Update tools
 ###########################################################################
-
 USER root
 
-RUN pacman -S --noconfirm git
+RUN dnf install tar wget vi --assumeyes
 
 ###########################################################################
-# OPENSSH
+# Installing systemd
 ###########################################################################
-
 USER root
 
-RUN pacman -S --noconfirm openssh
+RUN dnf install systemd --assumeyes
 
-RUN ssh-keygen -A
-
-RUN sed -i -e 's/^UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+RUN mkdir -p /etc/systemd/system/multi-user.target.wants
 
 ###########################################################################
-# OPENSSL
+# Installing locales
 ###########################################################################
-
 USER root
 
-RUN pacman -S --noconfirm openssl-1.1
+RUN dnf install glibc-langpack-uk --assumeyes
 
 ###########################################################################
-# PYTHON
+# Update tools
 ###########################################################################
-
 USER root
 
-RUN --mount=type=cache,target=/var/cache/python \
-    pacman -S --noconfirm python python-pip
+ARG GIT_GLOBAL_USER_NAME
+
+ARG GIT_GLOBAL_USER_EMAIL
+
+RUN dnf install git --assumeyes
+
+RUN git config --global user.name "${GIT_GLOBAL_USER_NAME}" && \
+    git config --global user.email "${GIT_GLOBAL_USER_EMAIL}"
 
 ###########################################################################
-# GO
+# Setup bash
 ###########################################################################
-
-USER root
-
-RUN --mount=type=cache,target=/var/cache/golang \
-    pacman -S --noconfirm go
-
-###########################################################################
-# OTHER
-###########################################################################
-
-USER root
-
-RUN pacman -S --noconfirm pkgconf oniguruma diffutils make autoconf bison re2c tidy postgresql-libs libsodium
-
-###########################################################################
-# VIRTUAL:WORLD
-###########################################################################
-
-USER root
-
-RUN pacman -S --noconfirm libpng libjpeg gd imagemagick libxslt libzip libmcrypt libimagequant jpegoptim optipng ghostscript ffmpeg
-
-###########################################################################
-# USERS
-###########################################################################
-
-USER root
-
-ARG PUID=1000
-ENV PUID ${PUID}
-ARG PGID=1000
-ENV PGID ${PGID}
-
-RUN groupadd -g ${PGID} web && \
-    useradd -l -r -u ${PUID} -g web -m web && \
-    usermod -p "*" web -s /bin/bash && \
-    echo "web ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/web
-
-###########################################################################
-# YAY
-###########################################################################
-
-USER web
-
-RUN cd /home/web && git clone https://aur.archlinux.org/yay.git && \
-    cd yay && makepkg -sri --needed --noconfirm && cd - && \
-    rm -rf .cache yay
-
-# ###########################################################################
-# # GCC
-# ###########################################################################
-
-# USER root
-
-# RUN yay -S --noconfirm gcc13 gcc13-libs
-
-# RUN mv /usr/bin/gcc /usr/bin/gcc-14.1.1 && \
-#     mv /usr/bin/g++ /usr/bin/g++-14.1.1
-
-# RUN ln -s /usr/bin/gcc-13 /usr/bin/gcc && \
-#     ln -s /usr/bin/g++-13 /usr/bin/g++
-
-###########################################################################
-# BASH
-###########################################################################
-
 USER root
 
 RUN mkdir -p /root/.bash-history && \
@@ -187,19 +108,20 @@ USER web
 RUN echo 'export HISTFILE=/home/web/.bash-history/.bash' | tee -a ~/.bashrc
 
 ###########################################################################
-# ZSH
+# Setup zsh
 ###########################################################################
-
 USER root
 
-RUN pacman -S --noconfirm zsh
+RUN dnf install zsh --assumeyes
 
 RUN wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
 
 RUN sh install.sh
 
+RUN git clone https://github.com/jessarcher/zsh-artisan.git ~/.oh-my-zsh/custom/plugins/artisan
+
 RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
-    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel5 npm yarn history-substring-search)/' ~/.zshrc && \
+    sed -i -E 's/plugins=(.+)/plugins=(git artisan composer npm yarn history-substring-search)/' ~/.zshrc && \
     echo "" | tee -a ~/.zshrc && \
     echo "# history plugin configs" | tee -a ~/.zshrc && \
     echo 'export HISTFILE=/root/.bash-history/.zsh' | tee -a ~/.zshrc && \
@@ -211,8 +133,10 @@ USER web
 
 RUN sh install.sh
 
+RUN git clone https://github.com/jessarcher/zsh-artisan.git ~/.oh-my-zsh/custom/plugins/artisan
+
 RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
-    sed -i -E 's/plugins=(.+)/plugins=(git asdf laravel5 npm yarn history-substring-search)/' ~/.zshrc && \
+    sed -i -E 's/plugins=(.+)/plugins=(git artisan composer npm yarn history-substring-search)/' ~/.zshrc && \
     echo "" | tee -a ~/.zshrc && \
     echo "# history plugin configs" | tee -a ~/.zshrc && \
     echo 'export HISTFILE=/home/web/.bash-history/.zsh' | tee -a ~/.zshrc && \
@@ -221,130 +145,122 @@ RUN sed -i -E 's/ZSH_THEME="(.+)"/ZSH_THEME="af-magic"/' ~/.zshrc && \
     echo 'HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red,bold"' | tee -a ~/.zshrc
 
 ###########################################################################
-# GOOGLE CHROME
+# Local https
 ###########################################################################
-
-# USER web
-
-# RUN --mount=type=cache,target=/var/cache/google-chrome \
-#     yay -S --noconfirm google-chrome
-
-###########################################################################
-# LOCATE
-###########################################################################
-
 USER root
 
-RUN pacman -S --noconfirm mlocate
+RUN dnf install nss-tools --assumeyes
 
-RUN updatedb
+RUN curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64" && \
+    chmod +x mkcert-v*-linux-amd64 && \
+    cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
 
 ###########################################################################
-# ASDF
+# Install and remi modules
 ###########################################################################
-
 USER root
 
-ENV BASH_FILES="/root/.zshrc /root/.bashrc /home/web/.zshrc /home/web/.bashrc"
+RUN dnf install https://rpms.remirepo.net/enterprise/remi-release-9.rpm --assumeyes
 
-ENV ASDF_DIR="/home/.asdf/vm"
-RUN mkdir -p ${ASDF_DIR}
-
-ENV ASDF_DATA_DIR="/home/.asdf/data"
-RUN mkdir -p ${ASDF_DATA_DIR}
-
-ENV PATH="${ASDF_DIR}/bin:${PATH}"
-
-RUN echo "" | tee -a ${BASH_FILES} && \
-    echo '# asdf' | tee -a ${BASH_FILES} && \
-    echo 'source ${ASDF_DIR}/asdf.sh' | tee -a ${BASH_FILES}
-
-RUN echo "" | tee -a ${BASH_FILES} && \
-    echo '# asdf-switcher' | tee -a ${BASH_FILES} && \
-    echo 'alias switch="bash /opt/switch.sh"' | tee -a ${BASH_FILES} && \
-    echo '# asdf-nodejs' | tee -a ${BASH_FILES} && \
-    echo 'alias use-nodejs-10="asdf global nodejs 10.24.1"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-nodejs-12="asdf global nodejs 12.22.12"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-nodejs-14="asdf global nodejs 14.21.3"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-nodejs-16="asdf global nodejs 16.20.2"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-nodejs-18="asdf global nodejs 18.19.0"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-nodejs-20="asdf global nodejs 20.10.0"' | tee -a ${BASH_FILES} && \
-    echo '# asdf-php' | tee -a ${BASH_FILES} && \
-    # echo 'alias use-php-56="asdf global php 5.6.40"' | tee -a ${BASH_FILES} && \
-    # echo 'alias use-php-74="asdf global php 7.1.33"' | tee -a ${BASH_FILES} && \
-    # echo 'alias use-php-74="asdf global php 7.4.33"' | tee -a ${BASH_FILES} && \
-    # echo 'alias use-php-80="asdf global php 8.0.26"' | tee -a ${BASH_FILES} && \
-    # echo 'alias use-php-81="asdf global php 8.1.29"' | tee -a ${BASH_FILES} && \
-    # echo 'alias use-php-82="asdf global php 8.2.21"' | tee -a ${BASH_FILES} && \
-    echo 'alias use-php-83="asdf global php 8.3.9"' | tee -a ${BASH_FILES}
+RUN dnf config-manager --set-enabled remi
 
 ###########################################################################
-# NPM
+# Installing ssh server
 ###########################################################################
-
 USER root
 
-RUN pacman -S --noconfirm npm && \
-    npm install --global yarn gulp-cli grunt-cli
+RUN dnf install openssh-server --assumeyes
+
+RUN ssh-keygen -A
+
+ADD ./ssh/ /root/.ssh/
+
+ADD --chown=web: ./ssh/ /home/web/.ssh/
+
+RUN sed -i -e 's/^UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config && \
+    sed -i -e 's/^#PermitUserEnvironment no/PermitUserEnvironment yes/g' /etc/ssh/sshd_config && \
+    sed -i -e 's/^#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+
+RUN cat /home/web/.ssh/id_ed25519.pub >> /home/web/.ssh/authorized_keys && \
+    cat /home/web/.ssh/id_rsa.pub >> /home/web/.ssh/authorized_keys
+
+RUN systemctl enable sshd.service
 
 ###########################################################################
-# NGINX
+# Install and run nginx
 ###########################################################################
-
 USER root
 
-RUN pacman -S --noconfirm nginx
-
-RUN touch /var/log/messages
+RUN dnf install nginx --assumeyes
 
 COPY nginx/nginx.conf /etc/nginx/
 
-###########################################################################
-# VSCODE-SERVER
-###########################################################################
+RUN systemctl enable nginx.service
 
+###########################################################################
+# Install and run php
+###########################################################################
 USER root
 
-RUN mkdir -p /home/web/.vscode-server/extensions && \
-    chown -R web /home/web/.vscode-server
+RUN dnf module enable php:remi-8.4 --assumeyes
 
-# ###########################################################################
-# # LOCALHTTPS
-# ###########################################################################
+RUN dnf install php php-bcmath php-cli php-common php-curl php-fpm php-gd php-gettext php-intl php-json php-mbstring php-mysqlnd php-opcache php-pdo php-pdo_mysql php-pgsql php-soap php-xml php-zip --assumeyes
 
-# USER root
+RUN sed -i 's/user = apache/user = web/' /etc/php-fpm.d/www.conf && \
+    sed -i 's/group = apache/group = web/' /etc/php-fpm.d/www.conf && \
+    sed -i 's/listen.acl_users = apache,nginx/listen.acl_users = web,nginx/' /etc/php-fpm.d/www.conf && \
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' /etc/php.ini && \
+    sed -i 's/post_max_size = 8M/post_max_size = 256M/' /etc/php.ini
 
-# RUN pip install localhttps --break-system-packages
+RUN dnf install php83 php83-php-bcmath php83-php-cli php83-php-common php83-php-curl php83-php-fpm php83-php-gd php83-php-gettext php83-php-intl php83-php-json php83-php-mbstring php83-php-mysqlnd php83-php-opcache php83-php-pdo php83-php-pdo_mysql php83-php-pgsql php83-php-soap php83-php-xml php83-php-zip --assumeyes
+
+RUN sed -i 's/user = apache/user = web/' /etc/opt/remi/php83/php-fpm.d/www.conf && \
+    sed -i 's/group = apache/group = web/' /etc/opt/remi/php83/php-fpm.d/www.conf && \
+    sed -i 's/listen.acl_users = apache/listen.acl_users = web,nginx/' /etc/opt/remi/php83/php-fpm.d/www.conf && \
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' /etc/opt/remi/php83/php.ini && \
+    sed -i 's/post_max_size = 8M/post_max_size = 256M/' /etc/opt/remi/php83/php.ini
+
+RUN dnf install php82 php82-php-bcmath php82-php-cli php82-php-common php82-php-curl php82-php-fpm php82-php-gd php82-php-gettext php82-php-intl php82-php-json php82-php-mbstring php82-php-mysqlnd php82-php-opcache php82-php-pdo php82-php-pdo_mysql php82-php-pgsql php82-php-soap php82-php-xml php82-php-zip --assumeyes
+
+RUN sed -i 's/user = apache/user = web/' /etc/opt/remi/php82/php-fpm.d/www.conf && \
+    sed -i 's/group = apache/group = web/' /etc/opt/remi/php82/php-fpm.d/www.conf && \
+    sed -i 's/listen.acl_users = apache/listen.acl_users = web,nginx/' /etc/opt/remi/php82/php-fpm.d/www.conf && \
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' /etc/opt/remi/php82/php.ini && \
+    sed -i 's/post_max_size = 8M/post_max_size = 256M/' /etc/opt/remi/php82/php.ini
+
+RUN dnf install php74 php74-php-bcmath php74-php-cli php74-php-common php74-php-curl php74-php-fpm php74-php-gd php74-php-gettext php74-php-intl php74-php-json php74-php-mbstring php74-php-mysqlnd php74-php-opcache php74-php-pdo php74-php-pdo_mysql php74-php-pgsql php74-php-soap php74-php-xml php74-php-zip --assumeyes
+
+RUN sed -i 's/user = apache/user = web/' /etc/opt/remi/php74/php-fpm.d/www.conf && \
+    sed -i 's/group = apache/group = web/' /etc/opt/remi/php74/php-fpm.d/www.conf && \
+    sed -i 's/listen.acl_users = apache/listen.acl_users = web,nginx/' /etc/opt/remi/php74/php-fpm.d/www.conf && \
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' /etc/opt/remi/php74/php.ini && \
+    sed -i 's/post_max_size = 8M/post_max_size = 256M/' /etc/opt/remi/php74/php.ini
+
+RUN systemctl enable php74-php-fpm.service && \
+    systemctl enable php82-php-fpm.service && \
+    systemctl enable php83-php-fpm.service && \
+    systemctl enable php-fpm.service
 
 ###########################################################################
-# SPC
+# Install nodejs
 ###########################################################################
+USER web
 
+ENV VOLTA_HOME=/home/web/.volta
+
+RUN curl https://get.volta.sh | bash
+
+RUN /home/web/.volta/bin/volta install node@16.20.2 node@18.19.0 node@20.10.0 node@23.8.0 yarn
+
+ENV PATH="${VOLTA_HOME}/bin:${PATH}"
+
+###########################################################################
+# Running system
+###########################################################################
 USER root
 
-RUN curl -fsSL -o spc https://dl.static-php.dev/static-php-cli/spc-bin/nightly/spc-linux-x86_64 && \
-    chmod +x ./spc && \
-    mv ./spc /bin/spc && \
-    spc doctor --auto-fix
+STOPSIGNAL SIGRTMIN+3
 
-RUN mkdir /opt/php && cd /opt/php && \
-    spc download --with-php=8.3 --for-extensions "apcu,bcmath,calendar,ctype,curl,dba,dom,exif,fileinfo,filter,gd,gettext,iconv,intl,mbregex,mbstring,mysqli,mysqlnd,opcache,openssl,pcntl,pdo,pdo_mysql,pdo_sqlite,phar,posix,readline,redis,session,simplexml,sockets,sodium,sqlite3,tokenizer,xml,xmlreader,xmlwriter,xsl,zip,zlib" --prefer-pre-built --debug && \
-    spc build --build-cli --build-fpm "apcu,bcmath,calendar,ctype,curl,dba,dom,exif,fileinfo,filter,gd,gettext,iconv,intl,mbregex,mbstring,mysqli,mysqlnd,opcache,openssl,pcntl,pdo,pdo_mysql,pdo_sqlite,phar,posix,readline,redis,session,simplexml,sockets,sodium,sqlite3,tokenizer,xml,xmlreader,xmlwriter,xsl,zip,zlib" --debug -I "memory_limit=256M"
-
-ADD ./php-fpm.config /etc/php-fpm.conf
-
-ENV PATH="/opt/php/buildroot/bin:${PATH}"
-
-###########################################################################
-# STARTUP
-###########################################################################
-
-ADD --chown=web: ./switch.sh /opt/switch.sh
-
-ADD ./install-nodejs.sh /opt/install-nodejs.sh
-ADD ./install-php.sh /opt/install-php.sh
-ADD ./startup.sh /opt/startup.sh
-
-CMD [ "su", "web", "/opt/startup.sh" ]
+CMD ["/sbin/init"]
 
 WORKDIR /var/www
