@@ -1,5 +1,5 @@
 ARG MYSQL_VERSION
-FROM mysql:${MYSQL_VERSION}
+FROM mysql:${MYSQL_VERSION}-debian
 
 #####################################
 # Set Timezone

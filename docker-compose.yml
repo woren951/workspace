@@ -1,4 +1,4 @@
-version: '3.5'
+version: "3.8"
 
 networks:
   default:
@@ -10,360 +10,335 @@ networks:
 
 volumes:
   vscode-extensions:
+  elasticsearch-6-data:
+  elasticsearch-7-data:
+  elasticsearch-8-data:
+  mariadb-11-data:
+  minio-config:
+  minio-data:
+  mongo-config:
+  mongo-data:
+  mongo-webui-data:
+  mysql-8-data:
+  pgadmin-data:
+  postgres-data:
+  redis-data:
 
 services:
-### MariaDB ##############################################
-    mariadb-11:
-      build:
-        context: ./mariadb
-        args:
-          - http_proxy
-          - https_proxy
-          - no_proxy
-          - MARIADB_VERSION=11
-      volumes:
-        - ${DATA_PATH_HOST}/mariadb-11:/var/lib/mysql
-        - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-        # logs
-        - ./.logs/mariadb-11:/var/log/mysql
-      ports:
-        - "3306:3306"
-      environment:
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - TZ=${SERVICES_TIMEZONE}
+  mariadb-11:
+    build:
+      context: ./mariadb
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${https_proxy}
+        no_proxy: ${no_proxy}
+        MARIADB_VERSION: 11
+    volumes:
+      - mariadb-11-data:/var/lib/mysql
+      - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./.logs/mariadb-11:/var/log/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: ${SERVICES_TIMEZONE}
 
-### MySQL ################################################
-    mysql-8:
-      build:
-        context: ./mysql
-        args:
-          - MYSQL_VERSION=8.0.28
-      command: --max_allowed_packet=32505856
-      environment:
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - TZ=${SERVICES_TIMEZONE}
-      volumes:
-        - ${DATA_PATH_HOST}/mysql-8:/var/lib/mysql
-        - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-        # logs
-        - ./.logs/mysql-8:/var/log/mysql
-      ports:
-        - "${MYSQL_PORT}:3306"
-      depends_on:
-        - phpmyadmin
+  mysql-8:
+    build:
+      context: ./mysql
+      args:
+        MYSQL_VERSION: 8.0.43
+    command: --max_allowed_packet=32505856
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: ${SERVICES_TIMEZONE}
+    volumes:
+      - mysql-8-data:/var/lib/mysql
+      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./.logs/mysql-8:/var/log/mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
+    depends_on:
+      - phpmyadmin
 
-### PhpMyAdmin ###########################################
-    phpmyadmin:
-      build: ./phpmyadmin
-      environment:
-        - PMA_HOSTS=mysql-8,mariadb
-        - MYSQL_USER=${PMA_USER}
-        - MYSQL_PASSWORD=${PMA_PASSWORD}
-        - MYSQL_ROOT_PASSWORD=${PMA_ROOT_PASSWORD}
-        - MAX_EXECUTION_TIME=${PMA_MAX_EXECUTION_TIME}
-        - MEMORY_LIMIT=${PMA_MEMORY_LIMIT}
-        - UPLOAD_LIMIT=${PMA_UPLOAD_LIMIT}
-      ports:
-        - "${PMA_PORT}:80"
+  phpmyadmin:
+    build: ./phpmyadmin
+    environment:
+      PMA_HOSTS: mysql-8,mariadb
+      MYSQL_USER: ${PMA_USER}
+      MYSQL_PASSWORD: ${PMA_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${PMA_ROOT_PASSWORD}
+      MAX_EXECUTION_TIME: ${PMA_MAX_EXECUTION_TIME}
+      MEMORY_LIMIT: ${PMA_MEMORY_LIMIT}
+      UPLOAD_LIMIT: ${PMA_UPLOAD_LIMIT}
+    ports:
+      - "${PMA_PORT}:80"
 
-### Mongo ##############################################
-    mongo:
-      build: ./mongo
-      environment:
-        - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
-        - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
-      volumes:
-        - ${DATA_PATH_HOST}/mongo:/data/db
-        - ${DATA_PATH_HOST}/mongo-config:/data/configdb
-      ports:
-        - "${MONGO_PORT}:27017"
-      depends_on:
-        - mongo-webui
+  mongo:
+    build: ./mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - mongo-data:/data/db
+      - mongo-config:/data/configdb
+    ports:
+      - "${MONGO_PORT}:27017"
+    depends_on:
+      - mongo-webui
 
-### MongoWebUI ################################################
-    mongo-webui:
-      build:
-        context: ./mongo-webui
-      environment:
-        - ROOT_URL=${MONGO_WEBUI_ROOT_URL}
-        - MONGO_URL=${MONGO_WEBUI_MONGO_URL}
-        - MONGO_WEBUI_INSTALL_MONGO=false
-      volumes:
-        - ${DATA_PATH_HOST}/mongo-webui:/data/db
-      ports:
-        - "${MONGO_WEBUI_PORT}:3000"
+  mongo-webui:
+    build:
+      context: ./mongo-webui
+    environment:
+      ROOT_URL: ${MONGO_WEBUI_ROOT_URL}
+      MONGO_URL: ${MONGO_WEBUI_MONGO_URL}
+      MONGO_WEBUI_INSTALL_MONGO: "false"
+    volumes:
+      - mongo-webui-data:/data/db
+    ports:
+      - "${MONGO_WEBUI_PORT}:3000"
 
-### PostgreSQL ###########################################
-    postgres:
-      build:
-        context: ./postgres
-        args:
-          - POSTGRES_VERSION=${POSTGRES_VERSION}
-      environment:
-        - POSTGRES_DB=${POSTGRES_DB}
-        - POSTGRES_USER=${POSTGRES_USER}
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      volumes:
-        - ${DATA_PATH_HOST}/postgres:/var/lib/postgresql/data
-        - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      ports:
-        - "${POSTGRES_PORT}:5432"
-      depends_on:
-        - pgadmin
+  postgres:
+    build:
+      context: ./postgres
+      args:
+        POSTGRES_VERSION: ${POSTGRES_VERSION}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    depends_on:
+      - pgadmin
 
-### pgAdmin ##############################################
-    pgadmin:
-      build:
-        context: ./pgadmin
-      environment:
-        - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-        - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
-      ports:
-        - "${PGADMIN_PORT}:80"
-      volumes:
-        - ${DATA_PATH_HOST}/pgadmin:/var/lib/pgadmin
+  pgadmin:
+    build:
+      context: ./pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT}:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
 
-### Redis ################################################
-    redis:
-      build: ./redis
-      volumes:
-        - ${DATA_PATH_HOST}/redis:/data
-      ports:
-        - "${REDIS_PORT}:6379"
+  redis:
+    build: ./redis
+    volumes:
+      - redis-data:/data
+    ports:
+      - "${REDIS_PORT}:6379"
 
-### REDISWEBUI ################################################
-    redis-webui:
-      build:
-        context: ./redis-webui
-      environment:
-        - ADMIN_USER=${REDIS_WEBUI_USERNAME}
-        - ADMIN_PASS=${REDIS_WEBUI_PASSWORD}
-        - REDIS_1_HOST=${REDIS_WEBUI_CONNECT_HOST}
-        - REDIS_1_PORT=${REDIS_WEBUI_CONNECT_PORT}
-      ports:
-        - "${REDIS_WEBUI_PORT}:80"
-      depends_on:
-        - redis
+  redis-webui:
+    build:
+      context: ./redis-webui
+    environment:
+      ADMIN_USER: ${REDIS_WEBUI_USERNAME}
+      ADMIN_PASS: ${REDIS_WEBUI_PASSWORD}
+      REDIS_1_HOST: ${REDIS_WEBUI_CONNECT_HOST}
+      REDIS_1_PORT: ${REDIS_WEBUI_CONNECT_PORT}
+    ports:
+      - "${REDIS_WEBUI_PORT}:80"
+    depends_on:
+      - redis
 
-### ElasticSearch ########################################
-    elasticsearch-8:
-      build:
-        context: ./elasticsearch
-        args:
-          - ELK_VERSION=8.11.3
-      volumes:
-        - '${DATA_PATH_HOST}/elasticsearch-8:/usr/share/elasticsearch/data'
-      environment:
-        - node.name=web-node
-        - cluster.name=web-cluster
-        - bootstrap.memory_lock=true
-        - xpack.security.enabled=false
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-        - cluster.initial_master_nodes=web-node
-      ulimits:
-        memlock:
-          soft: -1
-          hard: -1
-        nofile:
-          soft: 65536
-          hard: 65536
-      ports:
-        - "${ELASTICSEARCH_HOST_HTTP_PORT}:9200"
-        - "${ELASTICSEARCH_HOST_TRANSPORT_PORT}:9300"
+  elasticsearch-8:
+    build:
+      context: ./elasticsearch
+      args:
+        ELK_VERSION: 8.19.4
+    volumes:
+      - elasticsearch-8-data:/usr/share/elasticsearch/data
+    environment:
+      node.name: web-node
+      cluster.name: web-cluster
+      bootstrap.memory_lock: "true"
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
+      xpack.security.http.ssl.enabled: "false"
+      xpack.security.transport.ssl.enabled: "false"
+      xpack.ml.enabled: "false"
+      xpack.graph.enabled: "false"
+      xpack.watcher.enabled: "false"
+      cluster.initial_master_nodes: web-node
+      ingest.geoip.downloader.enabled: "true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "${ELASTICSEARCH_HOST_HTTP_PORT}:9200"
+      - "${ELASTICSEARCH_HOST_TRANSPORT_PORT}:9300"
 
-    elasticsearch-7:
-      build:
-        context: ./elasticsearch
-        args:
-          - ELK_VERSION=7.5.1
-      volumes:
-        - '${DATA_PATH_HOST}/elasticsearch-7:/usr/share/elasticsearch/data'
-      environment:
-        - node.name=web-node
-        - cluster.name=web-cluster
-        - bootstrap.memory_lock=true
-        - xpack.security.enabled=false
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-        - cluster.initial_master_nodes=web-node
-      ulimits:
-        memlock:
-          soft: -1
-          hard: -1
-        nofile:
-          soft: 65536
-          hard: 65536
-      ports:
-        - "${ELASTICSEARCH_HOST_HTTP_PORT}:9200"
-        - "${ELASTICSEARCH_HOST_TRANSPORT_PORT}:9300"
+  elasticsearch-7:
+    build:
+      context: ./elasticsearch
+      args:
+        ELK_VERSION: 7.17.28
+    volumes:
+      - elasticsearch-7-data:/usr/share/elasticsearch/data
+    environment:
+      node.name: web-node
+      cluster.name: web-cluster
+      bootstrap.memory_lock: "true"
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
+      xpack.security.http.ssl.enabled: "false"
+      xpack.security.transport.ssl.enabled: "false"
+      xpack.ml.enabled: "false"
+      xpack.graph.enabled: "false"
+      xpack.watcher.enabled: "false"
+      cluster.initial_master_nodes: web-node
+      ingest.geoip.downloader.enabled: "true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "${ELASTICSEARCH_HOST_HTTP_PORT}:9200"
+      - "${ELASTICSEARCH_HOST_TRANSPORT_PORT}:9300"
 
-    elasticsearch-6:
-      build:
-        context: ./elasticsearch
-        args:
-          - ELK_VERSION=6.8.10
-      volumes:
-        - '${DATA_PATH_HOST}/elasticsearch-6:/usr/share/elasticsearch/data'
-      environment:
-        - transport.host=127.0.0.1
-        - cluster.name=web-cluster
-        - bootstrap.memory_lock=true
-        - xpack.security.enabled=false
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      ulimits:
-        memlock:
-          soft: -1
-          hard: -1
-        nofile:
-          soft: 65536
-          hard: 65536
-      ports:
-        - "${ELASTICSEARCH_HOST_HTTP_PORT}:9200"
-        - "${ELASTICSEARCH_HOST_TRANSPORT_PORT}:9300"
+  elasticsearch-6:
+    build:
+      context: ./elasticsearch
+      args:
+        ELK_VERSION: 6.8.23
+    volumes:
+      - elasticsearch-6-data:/usr/share/elasticsearch/data
+    environment:
+      node.name: web-node
+      cluster.name: web-cluster
+      bootstrap.memory_lock: "true"
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms1024m -Xmx1024m"
+      xpack.security.http.ssl.enabled: "false"
+      xpack.security.transport.ssl.enabled: "false"
+      xpack.ml.enabled: "false"
+      xpack.graph.enabled: "false"
+      xpack.watcher.enabled: "false"
+      cluster.initial_master_nodes: web-node
+      ingest.geoip.downloader.enabled: "true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "${ELASTICSEARCH_HOST_HTTP_PORT}:9200"
+      - "${ELASTICSEARCH_HOST_TRANSPORT_PORT}:9300"
 
-### Kibana ##############################################
-    kibana-8:
-      build:
-        context: ./kibana
-        args:
-          - ELK_VERSION=8.11.3
-          - ELK_HOST=elasticsearch-8
-          - KIBANA_HOST=kibana-8
-          - TZ=${SERVICES_TIMEZONE}
-      ports:
-        - "${KIBANA_HTTP_PORT}:5601"
-      volumes:
-        # logs
-        - ./.logs/nginx:/var/log/nginx
-        - ./.logs/mysql-8:/var/log/mysql-8
-      environment:
-        ELASTICSEARCH_HOSTS: http://elasticsearch-8:9200
-      depends_on:
-        - elasticsearch-8
+  kibana-8:
+    build:
+      context: ./kibana
+      args:
+        ELK_VERSION: 8.19.4
+        ELK_HOST: elasticsearch-8
+        KIBANA_HOST: kibana-8
+        TZ: ${SERVICES_TIMEZONE}
+    ports:
+      - "${KIBANA_HTTP_PORT}:5601"
+    volumes:
+      - ./.logs/nginx:/var/log/nginx
+      - ./.logs/mysql-8:/var/log/mysql-8
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch-8:9200
+    depends_on:
+      - elasticsearch-8
 
-    kibana-7:
-      build:
-        context: ./kibana
-        args:
-          - ELK_VERSION=7.5.1
-          - ELK_HOST=elasticsearch-7
-          - KIBANA_HOST=kibana-7
-          - TZ=${SERVICES_TIMEZONE}
-      ports:
-        - "${KIBANA_HTTP_PORT}:5601"
-      volumes:
-        # logs
-        - ./.logs/nginx:/var/log/nginx
-        - ./.logs/mysql-8:/var/log/mysql-8
-      environment:
-        ELASTICSEARCH_HOSTS: http://elasticsearch-7:9200
-      depends_on:
-        - elasticsearch-7
+  kibana-7:
+    build:
+      context: ./kibana
+      args:
+        ELK_VERSION: 7.17.28
+        ELK_HOST: elasticsearch-7
+        KIBANA_HOST: kibana-7
+        TZ: ${SERVICES_TIMEZONE}
+    ports:
+      - "${KIBANA_HTTP_PORT}:5601"
+    volumes:
+      - ./.logs/nginx:/var/log/nginx
+      - ./.logs/mysql-8:/var/log/mysql-8
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch-7:9200
+    depends_on:
+      - elasticsearch-7
 
-    kibana-6:
-      build:
-        context: ./kibana
-        args:
-          - ELK_VERSION=6.8.10
-          - ELK_HOST=elasticsearch-6
-          - KIBANA_HOST=kibana-6
-          - TZ=${SERVICES_TIMEZONE}
-      ports:
-        - "${KIBANA_HTTP_PORT}:5601"
-      volumes:
-        # logs
-        - ./.logs/nginx:/var/log/nginx
-        - ./.logs/mysql-8:/var/log/mysql-8
-      environment:
-        ELASTICSEARCH_HOSTS: http://elasticsearch-6:9200
-      depends_on:
-        - elasticsearch-6
+  kibana-6:
+    build:
+      context: ./kibana
+      args:
+        ELK_VERSION: 6.8.23
+        ELK_HOST: elasticsearch-6
+        KIBANA_HOST: kibana-6
+        TZ: ${SERVICES_TIMEZONE}
+    ports:
+      - "${KIBANA_HTTP_PORT}:5601"
+    volumes:
+      - ./.logs/nginx:/var/log/nginx
+      - ./.logs/mysql-8:/var/log/mysql-8
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch-6:9200
+    depends_on:
+      - elasticsearch-6
 
-### OpenSearch ########################################
-    opensearch:
-      build:
-        context: ./opensearch
-      volumes:
-        - '${DATA_PATH_HOST}/opensearch:/usr/share/opensearch/data'
-      environment:
-        - discovery.type=single-node
-        - cluster.name=web-cluster
-        - bootstrap.memory_lock=true
-        - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
-        - OPENSEARCH_INITIAL_ADMIN_PASSWORD="adminadminadminadmin"
-        - DISABLE_SECURITY_PLUGIN=true
-      ulimits:
-        memlock:
-          soft: -1
-          hard: -1
-        nofile:
-          soft: 65536
-          hard: 65536
-      ports:
-        - "${ELASTICSEARCH_HOST_HTTP_PORT}:9200"
-        - "${ELASTICSEARCH_HOST_TRANSPORT_PORT}:9300"
+  minio:
+    build:
+      context: ./minio
+    volumes:
+      - minio-data:/export
+      - minio-config:/root/.minio
+    ports:
+      - "${MINIO_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
 
-### Opensearch dashboards ##############################################
-    opensearch-dashboards:
-      build:
-        context: ./opensearch-dashboards
-      ports:
-        - "${KIBANA_HTTP_PORT}:5601"
-      volumes:
-        # logs
-        - ./.logs/nginx:/var/log/nginx
-        - ./.logs/mysql-8:/var/log/mysql-8
-      environment:
-        OPENSEARCH_HOSTS: '["http://opensearch:9200"]'
-      depends_on:
-        - opensearch
-
-### Minio ################################################
-    minio:
-      build:
-        context: ./minio
-      volumes:
-        - ${DATA_PATH_HOST}/minio/data:/export
-        - ${DATA_PATH_HOST}/minio/config:/root/.minio
-      ports:
-        - "${MINIO_PORT}:9000"
-        - "${MINIO_CONSOLE_PORT}:9001"
-      environment:
-        - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-        - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-
-### Workspace ##############################################
-    workspace:
-      build:
-        context: ./workspace
-      tty: true
-      environment:
-        - LOCALHTTPS_DATA=${LOCALHTTPS_DATA}
-      volumes:
-        - ${APP_CODE_PATH_HOST}:/var/www${APP_CODE_CONTAINER_FLAG}
-        - ${HOME}/.ssh:/home/web/.ssh
-        - ${HOME}/.ssh:/root/.ssh
-        - ${LOCALHTTPS_DATA}:${LOCALHTTPS_DATA}
-        - ./workspace/sites-available:/etc/nginx/sites-available
-        - ./workspace/web-shared:/home/web/.web-shared
-        - .asdf/data:/home/.asdf/data
-        - .asdf/vm:/home/.asdf/vm
-        - .bash-history/root:/root/.bash-history
-        - .bash-history/web:/home/web/.bash-history
-        # vscode-server
-        - vscode-extensions:/home/web/.vscode-server/extensions
-        # logs
-        - ./.logs/nginx:/var/log/nginx
-      extra_hosts:
-        - "node-webserver.test:0.0.0.0"
-      ports:
-        - "80:80"
-        - "443:443"
-        - "2222:22"
-        - "3010:3010"
-        - "8080:8080"
+  workspace:
+    build:
+      context: ./workspace
+      args:
+        GIT_GLOBAL_USER_NAME: ${GIT_GLOBAL_USER_NAME}
+        GIT_GLOBAL_USER_EMAIL: ${GIT_GLOBAL_USER_EMAIL}
+    tty: true
+    privileged: true
+    volumes:
+      - ${APP_CODE_PATH_HOST}:/var/www${APP_CODE_CONTAINER_FLAG}
+      - .vscode-server:/home/web/.vscode-server
+      - ./workspace/sites-available:/etc/nginx/sites-available
+      - ./workspace/certs:/etc/nginx/certs
+      - .bash-history/root:/root/.bash-history
+      - .bash-history/web:/home/web/.bash-history
+      - .logs/nginx:/var/log/nginx
+      - .logs/php-fpm:/var/log/php-fpm
+    tmpfs:
+      - /run
+      - /run/lock
+    networks:
+      default:
+        ipv4_address: 182.16.240.24
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2222:22"
+      - "3010:3010"
+      - "8080:8080"

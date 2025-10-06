@@ -5,15 +5,15 @@ FROM kibana:${ELK_VERSION}
 # Set Timezone
 #####################################
 
-USER root
+# USER root
 
-RUN apt-get update && apt-get install -y tzdata
+# RUN apt-get update && apt-get install -y tzdata
 
-ARG TZ=UTC
+# ARG TZ=UTC
 
-ENV TZ ${TZ}
+# ENV TZ ${TZ}
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ###########################################################################
 # FILEBEAT
