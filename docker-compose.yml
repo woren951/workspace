@@ -29,9 +29,6 @@ services:
     build:
       context: ./mariadb
       args:
-        http_proxy: ${http_proxy}
-        https_proxy: ${https_proxy}
-        no_proxy: ${no_proxy}
         MARIADB_VERSION: 11
     volumes:
       - mariadb-11-data:/var/lib/mysql

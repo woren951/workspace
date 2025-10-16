@@ -54,6 +54,16 @@ COPY --chown=kibana:root filebeat-modules/mysql.yml $FILEBEAT_DIR/modules.d/mysq
 RUN chmod go-w $FILEBEAT_DIR/modules.d/mysql.yml
 
 ###########################################################################
+# FILEBEAT POSTGRESQL
+###########################################################################
+
+RUN cd ${FILEBEAT_DIR} && ./filebeat modules enable postgresql
+
+COPY --chown=kibana:root filebeat-modules/postgresql.yml $FILEBEAT_DIR/modules.d/postgresql.yml
+
+RUN chmod go-w $FILEBEAT_DIR/modules.d/postgresql.yml
+
+###########################################################################
 # MANUAL EXECUTION
 #
 # https://github.com/elastic/beats/blob/8.2/filebeat/module/nginx/access/ingest/pipeline.yml
