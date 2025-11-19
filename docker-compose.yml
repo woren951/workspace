@@ -171,6 +171,7 @@ services:
       xpack.watcher.enabled: "false"
       cluster.initial_master_nodes: web-node
       ingest.geoip.downloader.enabled: "true"
+      reindex.remote.whitelist: '172.17.0.1:9201'
     ulimits:
       memlock:
         soft: -1
@@ -202,6 +203,7 @@ services:
       xpack.watcher.enabled: "false"
       cluster.initial_master_nodes: web-node
       ingest.geoip.downloader.enabled: "true"
+      reindex.remote.whitelist: '172.17.0.1:9201'
     ulimits:
       memlock:
         soft: -1
@@ -233,6 +235,7 @@ services:
       xpack.watcher.enabled: "false"
       cluster.initial_master_nodes: web-node
       ingest.geoip.downloader.enabled: "true"
+      reindex.remote.whitelist: '172.17.0.1:9201'
     ulimits:
       memlock:
         soft: -1
