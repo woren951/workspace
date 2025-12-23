@@ -19,6 +19,8 @@ RUN dnf upgrade -y
 
 RUN dnf update -y
 
+RUN dnf install epel-release -y
+
 ###########################################################################
 # Install sudo
 ###########################################################################
@@ -61,15 +63,6 @@ RUN dnf install findutils ncurses -y
 USER root
 
 RUN dnf install tar wget vi -y
-
-###########################################################################
-# Installing systemd
-###########################################################################
-USER root
-
-RUN dnf install systemd -y
-
-RUN mkdir -p /etc/systemd/system/multi-user.target.wants
 
 ###########################################################################
 # Installing locales
@@ -159,28 +152,41 @@ RUN curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64" && \
 ###########################################################################
 USER root
 
-RUN dnf install chromium -y
-
-RUN dnf install alsa-lib.x86_64 \
-                atk.x86_64\
-                cups-libs.x86_64\
-                gtk3.x86_64 \
-                ipa-gothic-fonts \
-                libXcomposite.x86_64 \
-                libXcursor.x86_64 \
-                libXdamage.x86_64 \
-                libXext.x86_64 \
-                libXi.x86_64 \
-                libXrandr.x86_64 \
-                libXScrnSaver.x86_64 \
-                libXtst.x86_64 \
-                pango.x86_64 \
-                xorg-x11-fonts-100dpi \
-                xorg-x11-fonts-75dpi \
-                xorg-x11-fonts-cyrillic \
-                xorg-x11-fonts-misc \
-                xorg-x11-fonts-Type1 \
-                xorg-x11-utils -y
+RUN dnf install -y \
+        alsa-lib \
+        atk \
+        glibc \
+        cairo \
+        cups-libs \
+        dbus-libs \
+        expat \
+        fontconfig \
+        mesa-libgbm \
+        gcc \
+        GConf2 \
+        gdk-pixbuf2 \
+        glib2 \
+        gtk3 \
+        nspr \
+        pango \
+        libstdc++ \
+        libX11 \
+        libX11-xcb \
+        libxcb \
+        libXcomposite \
+        libXcursor \
+        libXdamage \
+        libXext \
+        libXfixes \
+        libXi \
+        libXrandr \
+        libXrender \
+        libXScrnSaver \
+        libXtst \
+        ca-certificates \
+        liberation-fonts \
+        nss \
+        xdg-utils
 
 ###########################################################################
 # Install and remi modules
@@ -211,8 +217,6 @@ RUN sed -i -e 's/^UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config && \
 RUN cat /home/web/.ssh/id_ed25519.pub >> /home/web/.ssh/authorized_keys && \
     cat /home/web/.ssh/id_rsa.pub >> /home/web/.ssh/authorized_keys
 
-RUN systemctl enable sshd.service
-
 ###########################################################################
 # Install and run nginx
 ###########################################################################
@@ -221,8 +225,6 @@ USER root
 RUN dnf install nginx -y
 
 COPY nginx/nginx.conf /etc/nginx/
-
-RUN systemctl enable nginx.service
 
 ###########################################################################
 # Install and run php
@@ -277,11 +279,6 @@ RUN dnf install -y \
     sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/' /etc/opt/remi/php74/php.ini && \
     sed -i 's/post_max_size = 8M/post_max_size = 256M/' /etc/opt/remi/php74/php.ini
 
-RUN systemctl enable php74-php-fpm.service && \
-    systemctl enable php82-php-fpm.service && \
-    systemctl enable php83-php-fpm.service && \
-    systemctl enable php-fpm.service
-
 ###########################################################################
 # Install nodejs
 ###########################################################################
@@ -300,8 +297,10 @@ ENV PATH="${VOLTA_HOME}/bin:${PATH}"
 ###########################################################################
 USER root
 
-STOPSIGNAL SIGRTMIN+3
+COPY entrypoint.sh /entrypoint.sh
 
-CMD ["/sbin/init"]
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 WORKDIR /var/www
