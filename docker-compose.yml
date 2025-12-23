@@ -321,7 +321,6 @@ services:
         GIT_GLOBAL_USER_NAME: ${GIT_GLOBAL_USER_NAME}
         GIT_GLOBAL_USER_EMAIL: ${GIT_GLOBAL_USER_EMAIL}
     tty: true
-    privileged: true
     volumes:
       - ${APP_CODE_PATH_HOST}:/var/www${APP_CODE_CONTAINER_FLAG}
       - .vscode-server:/home/web/.vscode-server
@@ -331,9 +330,6 @@ services:
       - .bash-history/web:/home/web/.bash-history
       - .logs/nginx:/var/log/nginx
       - .logs/php-fpm:/var/log/php-fpm
-    tmpfs:
-      - /run
-      - /run/lock
     networks:
       default:
         ipv4_address: 182.16.240.24
