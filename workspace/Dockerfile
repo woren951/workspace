@@ -62,7 +62,7 @@ RUN dnf install findutils ncurses -y
 ###########################################################################
 USER root
 
-RUN dnf install tar wget vi -y
+RUN dnf install tar wget vi ripgrep -y
 
 ###########################################################################
 # Installing locales
