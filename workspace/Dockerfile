@@ -222,9 +222,11 @@ RUN cat /home/web/.ssh/id_ed25519.pub >> /home/web/.ssh/authorized_keys && \
 ###########################################################################
 USER root
 
-RUN dnf install nginx -y
+RUN dnf install nginx dnsmasq -y
 
 COPY nginx/nginx.conf /etc/nginx/
+
+COPY dnsmasq.conf /etc/dnsmasq.conf
 
 ###########################################################################
 # Install and run php
