@@ -32,6 +32,12 @@ if [ -n "$mkcert_ca_source" ]; then
     echo "Installing mkcert CA into system trust store..."
     install -m 0644 "$mkcert_ca_source" /etc/pki/ca-trust/source/anchors/mkcert-local-rootCA.pem
     update-ca-trust extract
+
+    echo "Configuring NODE_EXTRA_CA_CERTS for Node.js to use mkcert CA..."
+    export NODE_EXTRA_CA_CERTS=/etc/pki/ca-trust/source/anchors/mkcert-local-rootCA.pem
+    cat > /etc/profile.d/node-extra-ca-certs.sh <<'EOF'
+export NODE_EXTRA_CA_CERTS=/etc/pki/ca-trust/source/anchors/mkcert-local-rootCA.pem
+EOF
 else
     echo "mkcert root CA not found in /etc/nginx/certs (expected mkcert-rootCA.pem or rootCA.pem)."
     echo "curl to *.test may fail with certificate verification errors."
