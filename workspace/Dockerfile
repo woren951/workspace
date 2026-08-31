@@ -58,11 +58,11 @@ USER root
 RUN dnf install findutils ncurses -y
 
 ###########################################################################
-# Update tools
+# Install tools
 ###########################################################################
 USER root
 
-RUN dnf install tar wget vi ripgrep -y
+RUN dnf install tar wget vi ripgrep procps-ng jq socat poppler-utils unzip -y
 
 ###########################################################################
 # Installing locales
